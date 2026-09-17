@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>01Academy — Курсы AI для детей и подростков в Ташкенте</title>
+  <meta name="description" content="Официальные курсы искусственного интеллекта для детей 7–18 лет от 01Academy в Ташкенте (ул. Тараса Шевченко, 20)." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'duo-green': '#58cc02',
+            'duo-green-border': '#46a302',
+            'duo-green-light': '#f2fbf0',
+            'duo-green-badge': '#e8fcd9',
+            'slate-900': '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-white text-slate-900 antialiased selection:bg-[#e8fcd9] selection:text-[#1e7000]">
+
+  <!-- Scroll Reading Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- ==========================================
+       1. NAVIGATION BAR (Figma Style)
+       ========================================== -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+    <div class="max-w-6xl mx-auto px-6 h-18 py-3.5 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2.5 group">
+        <img src="assets/logo_green.png" alt="01Academy" class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+        <span class="text-[11px] font-black uppercase text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">Kids</span>
+      </a>
+
+      <!-- Minimal Nav Links with Active Scroll Tracking -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-600">
+        <a href="#about" class="nav-link hover:text-duo-green transition-colors">О курсе</a>
+        <a href="#faq" class="nav-link hover:text-duo-green transition-colors">Вопросы</a>
+        <a href="#contacts" class="nav-link hover:text-duo-green transition-colors">Контакты</a>
+      </nav>
+
+      <!-- CTA -->
+      <div class="flex items-center gap-3">
+        <a href="#apply" class="btn-duo-primary text-xs sm:text-sm px-5 py-2.5">
+          Пробный урок
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ==========================================
+         2. HERO SECTION (EXACT MATCH TO VIDEO BACKGROUND #fcfcfc)
+         ========================================== -->
+    <section class="relative pt-12 pb-16 sm:pt-16 sm:pb-24 border-b border-slate-200/80 overflow-hidden" style="background-color: #fcfcfc;">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          
+          <!-- Hero Left Column: Clean Minimalist Copy with Playful Animations -->
+          <div class="lg:col-span-7 text-center lg:text-left">
+            
+            <!-- Main Heading with Interactive Word Bounce and AI Shimmer -->
+            <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-black text-slate-900 tracking-[-0.03em] leading-[1.12] mb-5 select-none">
+              <span class="word-bounce">Мы</span> <span class="word-bounce">не</span> <span class="word-bounce">учим</span> <span class="word-bounce">программировать.</span> <br />
+              <span class="word-bounce">Мы</span> <span class="word-bounce">учим</span> <span class="text-shimmer underline-animated">использовать AI с умом.</span>
+            </h1>
+
+            <!-- Subtitle with Scroll Highlights -->
+            <p class="text-base sm:text-lg text-slate-600 font-medium leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+              Практический курс <strong class="text-slate-900 font-bold">AI Kids</strong> <span class="scroll-highlight">для детей и подростков 7–18 лет</span>: проектное мышление, генерация контента и решение реальных задач <span class="scroll-highlight">с первого урока</span>.
+            </p>
+
+            <!-- Action Buttons with Scroll Animation -->
+            <div class="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
+              <a href="#apply" class="btn-duo-primary scroll-button px-8 py-3.5 text-base inline-flex items-center justify-center">
+                Записаться на пробный урок
+              </a>
+              <a href="#about" class="btn-duo-secondary scroll-button px-6 py-3.5 text-base inline-flex items-center justify-center">
+                О курсе ↓
+              </a>
+            </div>
+
+            <!-- Trust / Key Facts Micro-Cards with Staggered Scroll Reveal -->
+            <div class="grid grid-cols-3 gap-3 pt-6 mt-6 border-t border-slate-200/60 max-w-lg mx-auto lg:mx-0">
+              <div class="scroll-trust-card bg-white border border-slate-200/80 rounded-xl p-3 text-center shadow-xs">
+                <div class="text-base mb-0.5">🏢</div>
+                <div class="text-xs font-bold text-slate-800">Ташкент</div>
+                <div class="text-[11px] font-medium text-slate-500">Шевченко, 20</div>
+              </div>
+              <div class="scroll-trust-card bg-white border border-slate-200/80 rounded-xl p-3 text-center shadow-xs">
+                <div class="text-base mb-0.5">💻</div>
+                <div class="text-xs font-bold text-slate-800">Техника</div>
+                <div class="text-[11px] font-medium text-slate-500">Всё включено</div>
+              </div>
+              <div class="scroll-trust-card bg-white border border-slate-200/80 rounded-xl p-3 text-center shadow-xs">
+                <div class="text-base mb-0.5">🚀</div>
+                <div class="text-xs font-bold text-slate-800">Итог</div>
+                <div class="text-[11px] font-medium text-slate-500">Свой проект</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Hero Right Column: Interactive Alligator -->
+          <div class="lg:col-span-5 flex items-center justify-center">
+            <div class="w-full max-w-[420px] aspect-square flex items-center justify-center" style="background-color: #fcfcfc;">
+              <canvas id="alligator-canvas" width="600" height="600" class="w-full h-full object-contain" style="background-color: #fcfcfc;"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         3. ABOUT THE COURSE (AI KIDS)
+         ========================================== -->
+    <section id="about" class="py-20 sm:py-28 bg-white border-b border-slate-200/80">
+      <div class="max-w-5xl mx-auto px-6">
+        
+        <!-- Header with Masked Scroll Text Reveal -->
+        <div class="text-center max-w-xl mx-auto mb-14 reveal-fade header-reveal">
+          <div class="badge-duo mb-3">01Academy Kids</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-[-0.02em] mb-3 scroll-reveal-text">
+            <span class="scroll-inner">О курсе <span class="text-duo-green">AI Kids</span></span>
+          </h2>
+          <p class="text-slate-500 font-medium text-base">
+            Практическая программа <span class="scroll-highlight">для детей и подростков 7–18 лет</span> в Ташкенте. Учим использовать нейросети осознанно: для творчества, учёбы и собственных проектов.
+          </p>
+        </div>
+
+        <!-- Single Course Presentation Card with Interactive Elements -->
+        <div class="figma-course-card scroll-block-reveal p-7 sm:p-10 mb-8">
+          <div class="grid md:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left: What the student learns with Scroll Feature Stagger -->
+            <div class="md:col-span-7 space-y-6">
+              <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
+                <span>🎯 Чему учится ребёнок</span>
+              </div>
+
+              <ul class="space-y-4 text-sm sm:text-base text-slate-700 font-semibold">
+                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                  <span><strong>Промптинг:</strong> формулировать задачи для нейросетей простыми и точными словами.</span>
+                </li>
+                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                  <span><strong>Контент и визуалы:</strong> генерировать иллюстрации, персонажей, комиксы, сценарии и видео.</span>
+                </li>
+                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                  <span><strong>Школьные проекты:</strong> собирать материалы и готовить понятные презентации и доклады.</span>
+                </li>
+                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                  <span><strong>Критическое мышление:</strong> проверять факты, находить ошибки AI и <span class="scroll-highlight">не списывать слепо</span>.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right: Course format & CTA with Pop Stats on Scroll -->
+            <div class="md:col-span-5 scroll-block-reveal bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 space-y-4">
+              <div class="text-xs font-black uppercase text-slate-400 tracking-wider">Параметры курса</div>
+              
+              <div class="space-y-3 text-xs sm:text-sm text-slate-800 font-bold">
+                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
+                  <span class="text-slate-500 font-medium">Возраст:</span>
+                  <span class="scroll-stat-badge">7–18 лет (группы по возрасту)</span>
+                </div>
+                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
+                  <span class="text-slate-500 font-medium">График:</span>
+                  <span class="scroll-stat-badge">90 мин / выходные</span>
+                </div>
+                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
+                  <span class="text-slate-500 font-medium">Группа:</span>
+                  <span class="scroll-stat-badge">до 12 учеников</span>
+                </div>
+                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
+                  <span class="text-slate-500 font-medium">Оборудование:</span>
+                  <span class="scroll-stat-badge text-emerald-700">Предоставляем</span>
+                </div>
+                <div class="stat-row flex items-center justify-between pt-1">
+                  <span class="text-slate-500 font-medium">Итог курса:</span>
+                  <span class="scroll-stat-badge text-duo-green font-extrabold scroll-highlight">Личный проект</span>
+                </div>
+              </div>
+
+              <a href="#apply" class="btn-duo-primary scroll-button w-full py-3.5 text-sm mt-4 inline-flex items-center justify-center">
+                Записаться на курс
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         4. FAQ SECTION
+         ========================================== -->
+    <section id="faq" class="py-20 sm:py-24 bg-white border-b border-slate-200/80">
+      <div class="max-w-3xl mx-auto px-6">
+        
+        <div class="text-center mb-12 reveal-fade header-reveal">
+          <h2 class="text-3xl font-black text-slate-900 tracking-[-0.02em] mb-2 scroll-reveal-text">
+            <span class="scroll-inner">Частые вопросы</span>
+          </h2>
+          <p class="text-slate-500 font-medium text-sm">
+            Главное, что нужно знать родителям <span class="scroll-highlight">перед стартом</span>.
+          </p>
+        </div>
+
+        <div class="space-y-3.5">
+          
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/80 rounded-2xl p-5 bg-white">
+            <h4 class="font-black text-slate-900 text-base mb-1.5 transition-colors">Как проходит пробный урок?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+              Ребёнок знакомится с преподавателем, пробует базовые AI-инструменты на практике и создаёт свой первый мини-проект. Участие бесплатное, чтобы вы могли оценить формат.
+            </p>
+          </div>
+
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/80 rounded-2xl p-5 bg-white">
+            <h4 class="font-black text-slate-900 text-base mb-1.5 transition-colors">Что нужно брать с собой на занятия?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+              Все рабочие места, компьютеры и доступы к нейросетям полностью настроены в академии. Брать свой ноутбук или дополнительные материалы не требуется.
+            </p>
+          </div>
+
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/80 rounded-2xl p-5 bg-white">
+            <h4 class="font-black text-slate-900 text-base mb-1.5 transition-colors">Безопасно ли это и не заменит ли AI собственное мышление?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+              Мы учим критическому мышлению и фактчекингу: понимать логику работы AI, проверять ответы на ошибки (галлюцинации) и использовать технологии как рабочий инструмент для решения задач, а не слепое списывание.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- FAQ Direct Help CTA Block with Button -->
+        <div class="scroll-block-reveal mt-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/80 border-2 border-emerald-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            <h4 class="font-black text-slate-900 text-base">Остались вопросы о курсе?</h4>
+            <p class="text-xs text-slate-600 font-medium mt-0.5">Напишите нам в Telegram — ответим в течение 10 минут</p>
+          </div>
+          <a href="https://t.me/AIacademy_uz" target="_blank" class="btn-duo-primary scroll-button text-xs sm:text-sm px-5 py-3 shrink-0 inline-flex items-center gap-2">
+            <span>Написать в Telegram</span>
+            <span>→</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         5. APPLICATION FORM
+         ========================================== -->
+    <section id="apply" class="py-20 sm:py-24 bg-[#fbfdfa]">
+      <div class="max-w-md mx-auto px-6 text-center">
+        
+        <div class="reveal-fade header-reveal mb-8">
+          <div class="badge-duo mb-3">01Academy Kids</div>
+          <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2 scroll-reveal-text">
+            <span class="scroll-inner">Записаться на урок</span>
+          </h2>
+          <p class="text-slate-500 font-medium text-xs sm:text-sm">
+            Оставьте контакты — мы согласуем <span class="scroll-highlight">удобное время</span> в ближайшие выходные.
+          </p>
+        </div>
+
+        <form id="lead-form" class="mockup-frame scroll-block-reveal p-7 text-left space-y-4 bg-white border-2 border-slate-200">
+          <div class="scroll-form-field">
+            <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Имя</label>
+            <input type="text" id="name" required placeholder="Ваше имя или имя ребёнка" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
+          </div>
+
+          <div class="scroll-form-field">
+            <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Номер телефона</label>
+            <input type="tel" id="phone" required placeholder="+998 90 123 45 67" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
+          </div>
+
+          <div class="scroll-form-field">
+            <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Возраст ребёнка</label>
+            <select id="course" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none bg-white transition-colors">
+              <option value="7–10 лет">7–10 лет</option>
+              <option value="11–14 лет">11–14 лет</option>
+              <option value="15–18 лет">15–18 лет</option>
+            </select>
+          </div>
+
+          <div class="scroll-form-field">
+            <button type="submit" class="btn-duo-primary scroll-button w-full py-3.5 text-sm font-extrabold mt-2 flex items-center justify-center gap-2">
+              <span>Забронировать место</span>
+              <span>🚀</span>
+            </button>
+          </div>
+
+          <div id="form-msg" class="hidden text-center text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 rounded-xl p-3">
+            ✓ Спасибо! Заявка принята. Менеджер 01Academy свяжется с вами!
+          </div>
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       7. MINIMAL FOOTER
+       ========================================== -->
+  <footer id="contacts" class="py-12 bg-white border-t border-slate-200/80">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-slate-500 font-bold">
+      <div class="flex items-center gap-2.5">
+        <img src="assets/logo_green.png" alt="01Academy" class="h-6 w-auto object-contain" />
+        <span class="text-[10px] font-black uppercase text-emerald-800 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-md">Kids</span>
+        <span class="text-slate-300">·</span>
+        <span>г. Ташкент, ул. Тараса Шевченко, 20</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="https://t.me/AIacademy_uz" target="_blank" class="text-duo-green hover:underline">Telegram: @AIacademy_uz</a>
+        <a href="https://01academy.uz" target="_blank" class="text-slate-700 hover:text-duo-green">01academy.uz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "01academy-ai-kids-duolingo",
+  "version": "1.0.0",
+  "description": "Сайт для детей о курсах AI Kids от 01Academy в стиле Duolingo",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve . -p 5173",
+    "start": "npx -y serve . -p 5173"
+  },
+  "keywords": [
+    "ai",
+    "kids",
+    "01academy",
+    "duolingo"
+  ],
+  "author": "01Academy",
+  "license": "MIT"
+}

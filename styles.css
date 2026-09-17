@@ -1,0 +1,544 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900;1000&family=Onest:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --duo-green: #58cc02;
+  --duo-green-border: #46a302;
+  --duo-green-light: #f2fbf0;
+  --duo-green-badge: #e8fcd9;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-600: #475569;
+  --slate-400: #94a3b8;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Onest', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--slate-900);
+  background-color: #ffffff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, 
+.font-heading, 
+.btn-duo-primary, 
+.btn-duo-secondary, 
+.badge-duo {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Figma Background Pattern */
+.bg-dot-grid {
+  background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* Duolingo Chunky 3D Tactile Buttons */
+.btn-duo-primary {
+  background-color: var(--duo-green);
+  border: none;
+  border-bottom: 4px solid var(--duo-green-border);
+  color: #ffffff;
+  font-weight: 800;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.1s ease, background-color 0.15s ease, border-bottom 0.1s ease, box-shadow 0.15s ease;
+  user-select: none;
+  box-shadow: 0 4px 14px -2px rgba(88, 204, 2, 0.35);
+}
+
+.btn-duo-primary:hover {
+  background-color: #61e002;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -2px rgba(88, 204, 2, 0.45);
+}
+
+.btn-duo-primary:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  box-shadow: 0 2px 6px rgba(88, 204, 2, 0.2);
+}
+
+.btn-duo-secondary {
+  background-color: #ffffff;
+  border: 2px solid var(--slate-200);
+  border-bottom: 4px solid #cbd5e1;
+  color: var(--slate-800);
+  font-weight: 800;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.btn-duo-secondary:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  border-bottom-color: #64748b;
+  transform: translateY(-1px);
+}
+
+.btn-duo-secondary:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+/* Figma-Grade Course Card */
+.figma-course-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-bottom: 5px solid #cbd5e1;
+  border-radius: 24px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.figma-course-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--duo-green);
+  border-bottom-color: var(--duo-green-border);
+  box-shadow: 0 16px 36px -10px rgba(88, 204, 2, 0.2);
+}
+
+.figma-course-card.highlight {
+  border-color: #86efac;
+  border-bottom-color: var(--duo-green);
+  box-shadow: 0 10px 30px -10px rgba(88, 204, 2, 0.25);
+}
+
+.figma-course-card.highlight:hover {
+  border-color: var(--duo-green);
+  border-bottom-color: var(--duo-green-border);
+  box-shadow: 0 20px 40px -10px rgba(88, 204, 2, 0.35);
+}
+
+/* Pill Badges */
+.badge-duo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background-color: var(--duo-green-badge);
+  color: #1e7000;
+  border: 1px solid #b7f495;
+}
+
+/* Mockup preview frame */
+.mockup-frame {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+}
+
+/* ==========================================
+   TEXT ANIMATIONS & SPECIAL EFFECTS
+   ========================================== */
+
+/* 1. Shimmering AI Gradient Text */
+.text-shimmer {
+  background: linear-gradient(110deg, #58cc02 0%, #10b981 30%, #84cc16 60%, #58cc02 85%, #15803d 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmerAnim 5s linear infinite;
+  display: inline-block;
+}
+
+@keyframes textShimmerAnim {
+  0% { background-position: 0% center; }
+  100% { background-position: 250% center; }
+}
+
+/* 2. Dynamic Animated Underline (Two-way scroll supported) */
+.underline-animated {
+  position: relative;
+  display: inline-block;
+}
+
+.underline-animated::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  bottom: 2px;
+  width: calc(100% + 4px);
+  height: 9px;
+  background: rgba(88, 204, 2, 0.28);
+  border-radius: 4px;
+  z-index: -1;
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.underline-animated.is-in-view::after {
+  transform: scaleX(1);
+}
+
+/* Reverse rewind when scrolling up */
+body.scrolling-up .underline-animated::after {
+  transform-origin: right center;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 3. Interactive Hover Bounce on words */
+.word-bounce {
+  display: inline-block;
+  cursor: default;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+}
+
+.word-bounce:hover {
+  transform: translateY(-4px) scale(1.06);
+  color: var(--duo-green);
+}
+
+/* 4. Floating Badge with gentle pulse */
+.badge-float {
+  animation: floatBadge 3.6s ease-in-out infinite;
+}
+
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* 5. Scroll Reveal Animations (Header & Body Reverse Stagger) */
+.reveal-fade {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in Reverse: Body vanishes first (0s), Header vanishes last (0.16s) */
+.reveal-fade.body-reveal { transition-delay: 0.00s; }
+.reveal-fade.header-reveal { transition-delay: 0.16s; }
+
+/* Appear in Forward order: Header appears first (0s), Body appears second (0.12s) */
+.reveal-fade.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-fade.is-visible.header-reveal { transition-delay: 0.00s; }
+.reveal-fade.is-visible.body-reveal { transition-delay: 0.12s; }
+
+/* 6. Check item micro-interaction */
+.check-item {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.check-item:hover {
+  transform: translateX(6px);
+}
+
+.check-item:hover .check-icon {
+  transform: scale(1.18) rotate(-6deg);
+  background-color: #61e002;
+  box-shadow: 0 4px 12px rgba(88, 204, 2, 0.4);
+}
+
+.check-icon {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 7. Rotating Text / Tagline Flip */
+.rotator-wrap {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  height: 28px;
+  vertical-align: middle;
+}
+
+.rotator-text {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.rotator-text.sliding-out {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.rotator-text.sliding-in {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+/* 8. FAQ Interactive Card */
+.faq-item {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 20px -5px rgba(15, 23, 42, 0.06);
+}
+
+.faq-item:hover h4 {
+  color: #15803d;
+}
+
+/* ==========================================
+   SCROLL-TRIGGERED TEXT ANIMATIONS
+   ========================================== */
+
+/* 9. Scroll Reading Progress Bar */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #58cc02, #10b981, #22c55e);
+  z-index: 999;
+  width: 0%;
+  transition: width 0.08s ease-out;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 1px 8px rgba(88, 204, 2, 0.45);
+}
+
+/* 10. Scroll Highlighter: draws across key words as you scroll to them (Bidirectional) */
+.scroll-highlight {
+  display: inline;
+  background-image: linear-gradient(120deg, rgba(88, 204, 2, 0.22) 0%, rgba(88, 204, 2, 0.28) 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 88%;
+  background-position: 100% 88%;
+  transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+
+.scroll-highlight.is-in-view {
+  background-size: 100% 88%;
+  background-position: 0 88%;
+  transition: background-size 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 11. Masked Scroll Heading Reveal: text glides up from bottom when scrolled into view */
+.scroll-reveal-text {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 2px;
+}
+
+.scroll-reveal-text > .scroll-inner {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+.scroll-reveal-text.is-in-view > .scroll-inner {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  transition-delay: 0.04s;
+}
+
+/* 12. Feature Checklist Stagger on Scroll (Reverse on exit) */
+.scroll-feature-item {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in REVERSE order: 4 -> 3 -> 2 -> 1 */
+.scroll-feature-item:nth-child(4) { transition-delay: 0.00s; }
+.scroll-feature-item:nth-child(3) { transition-delay: 0.07s; }
+.scroll-feature-item:nth-child(2) { transition-delay: 0.14s; }
+.scroll-feature-item:nth-child(1) { transition-delay: 0.21s; }
+
+/* Appear in FORWARD order: 1 -> 2 -> 3 -> 4 */
+.scroll-feature-item.is-in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+.scroll-feature-item.is-in-view:nth-child(1) { transition-delay: 0.04s; }
+.scroll-feature-item.is-in-view:nth-child(2) { transition-delay: 0.12s; }
+.scroll-feature-item.is-in-view:nth-child(3) { transition-delay: 0.20s; }
+.scroll-feature-item.is-in-view:nth-child(4) { transition-delay: 0.28s; }
+
+/* 13. Parameter Stat Pop on Scroll (Reverse on exit) */
+.scroll-stat-badge {
+  display: inline-block;
+  opacity: 0;
+  transform: scale(0.82) translateY(4px);
+  transition: opacity 0.26s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in REVERSE order: 5 -> 4 -> 3 -> 2 -> 1 */
+.stat-row:nth-child(5) .scroll-stat-badge { transition-delay: 0.00s; }
+.stat-row:nth-child(4) .scroll-stat-badge { transition-delay: 0.06s; }
+.stat-row:nth-child(3) .scroll-stat-badge { transition-delay: 0.12s; }
+.stat-row:nth-child(2) .scroll-stat-badge { transition-delay: 0.18s; }
+.stat-row:nth-child(1) .scroll-stat-badge { transition-delay: 0.24s; }
+
+/* Appear in FORWARD order: 1 -> 2 -> 3 -> 4 -> 5 */
+.scroll-stat-badge.is-in-view {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.stat-row:nth-child(1) .scroll-stat-badge.is-in-view { transition-delay: 0.04s; }
+.stat-row:nth-child(2) .scroll-stat-badge.is-in-view { transition-delay: 0.10s; }
+.stat-row:nth-child(3) .scroll-stat-badge.is-in-view { transition-delay: 0.16s; }
+.stat-row:nth-child(4) .scroll-stat-badge.is-in-view { transition-delay: 0.22s; }
+.stat-row:nth-child(5) .scroll-stat-badge.is-in-view { transition-delay: 0.28s; }
+
+/* 14. FAQ Cards Staggered Rise on Scroll (Reverse on exit) */
+.scroll-faq-card {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in REVERSE order: 3 -> 2 -> 1 */
+.scroll-faq-card:nth-child(3) { transition-delay: 0.00s; }
+.scroll-faq-card:nth-child(2) { transition-delay: 0.08s; }
+.scroll-faq-card:nth-child(1) { transition-delay: 0.16s; }
+
+/* Appear in FORWARD order: 1 -> 2 -> 3 */
+.scroll-faq-card.is-in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.scroll-faq-card.is-in-view:nth-child(1) { transition-delay: 0.04s; }
+.scroll-faq-card.is-in-view:nth-child(2) { transition-delay: 0.14s; }
+.scroll-faq-card.is-in-view:nth-child(3) { transition-delay: 0.24s; }
+
+/* 15. Nav Link Scroll Highlight */
+.nav-link {
+  transition: color 0.15s ease, background-color 0.15s ease;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.nav-link.active {
+  color: #15803d;
+  background-color: var(--duo-green-badge);
+}
+
+/* ==========================================
+   BLOCKS & BUTTONS SCROLL ANIMATIONS (BIDIRECTIONAL / REVERSE)
+   ========================================== */
+
+/* 16. Whole Block Reveal (Cards, Form, Panels) */
+.scroll-block-reveal {
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Reverse exit delay for blocks */
+.scroll-block-reveal {
+  transition-delay: 0.10s;
+}
+
+.scroll-block-reveal.is-in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-delay: 0.00s;
+}
+
+/* 17. Buttons Dynamic Reveal & Pop */
+.scroll-button {
+  opacity: 0;
+  transform: translateY(14px) scale(0.93);
+  transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1), transform 0.30s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: opacity, transform;
+}
+
+/* On reverse exit: buttons vanish FIRST (0.00s) */
+.scroll-button {
+  transition-delay: 0.00s;
+}
+
+/* On forward entrance: buttons pop in with a spring bounce */
+.scroll-button.is-in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-delay: 0.22s;
+}
+
+/* Secondary button slight offset */
+.scroll-button + .scroll-button.is-in-view {
+  transition-delay: 0.28s;
+}
+
+/* 18. Form Fields Stagger */
+.scroll-form-field {
+  opacity: 0;
+  transform: translateX(-18px);
+  transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1), transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in REVERSE order: 4 (button) -> 3 -> 2 -> 1 */
+.scroll-form-field:nth-child(4) { transition-delay: 0.00s; }
+.scroll-form-field:nth-child(3) { transition-delay: 0.07s; }
+.scroll-form-field:nth-child(2) { transition-delay: 0.14s; }
+.scroll-form-field:nth-child(1) { transition-delay: 0.21s; }
+
+/* Appear in FORWARD order: 1 -> 2 -> 3 -> 4 */
+.scroll-form-field.is-in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+.scroll-form-field.is-in-view:nth-child(1) { transition-delay: 0.05s; }
+.scroll-form-field.is-in-view:nth-child(2) { transition-delay: 0.11s; }
+.scroll-form-field.is-in-view:nth-child(3) { transition-delay: 0.17s; }
+.scroll-form-field.is-in-view:nth-child(4) { transition-delay: 0.25s; }
+
+/* 19. Trust/Benefit Micro-Cards */
+.scroll-trust-card {
+  opacity: 0;
+  transform: translateY(18px) scale(0.95);
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.30s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Disappear in REVERSE order: 3 -> 2 -> 1 */
+.scroll-trust-card:nth-child(3) { transition-delay: 0.00s; }
+.scroll-trust-card:nth-child(2) { transition-delay: 0.08s; }
+.scroll-trust-card:nth-child(1) { transition-delay: 0.16s; }
+
+/* Appear in FORWARD order: 1 -> 2 -> 3 */
+.scroll-trust-card.is-in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.scroll-trust-card.is-in-view:nth-child(1) { transition-delay: 0.06s; }
+.scroll-trust-card.is-in-view:nth-child(2) { transition-delay: 0.14s; }
+.scroll-trust-card.is-in-view:nth-child(3) { transition-delay: 0.22s; }
+
+
