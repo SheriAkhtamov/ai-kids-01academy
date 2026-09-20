@@ -548,28 +548,6 @@ body.scrolling-up .underline-animated::after {
   position: relative;
   overflow: hidden;
   height: 500px;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.1) 6%,
-    rgba(0, 0, 0, 0.85) 18%,
-    black 25%,
-    black 75%,
-    rgba(0, 0, 0, 0.85) 82%,
-    rgba(0, 0, 0, 0.1) 94%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.1) 6%,
-    rgba(0, 0, 0, 0.85) 18%,
-    black 25%,
-    black 75%,
-    rgba(0, 0, 0, 0.85) 82%,
-    rgba(0, 0, 0, 0.1) 94%,
-    transparent 100%
-  );
 }
 
 @media (min-width: 640px) {
@@ -599,8 +577,8 @@ body.scrolling-up .underline-animated::after {
   overflow: hidden;
   background-color: #0f172a;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-  transition: opacity 0.2s ease-out, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .collage-card:hover {

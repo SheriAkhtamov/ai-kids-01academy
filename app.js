@@ -436,28 +436,6 @@ function initCollageParallax() {
 
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Dynamic card edge fading (cards fade out and disappear at the edges)
-  function updateCardFading() {
-    const vRect = viewport.getBoundingClientRect();
-    const vH = vRect.height;
-    const fadeTop = vH * 0.24;
-    const fadeBottom = vH * 0.76;
-
-    cards.forEach((card) => {
-      const cRect = card.getBoundingClientRect();
-      const cardCenterY = (cRect.top + cRect.bottom) / 2 - vRect.top;
-
-      let opacity = 1;
-      if (cardCenterY < fadeTop) {
-        opacity = Math.max(0, cardCenterY / fadeTop);
-      } else if (cardCenterY > fadeBottom) {
-        opacity = Math.max(0, (vH - cardCenterY) / (vH - fadeBottom));
-      }
-
-      card.style.opacity = opacity.toFixed(3);
-    });
-  }
-
   // IntersectionObserver: only run loop when section is in view
   let isVisible = true;
   if ('IntersectionObserver' in window) {
@@ -501,8 +479,6 @@ function initCollageParallax() {
         if (offset3 < 0) offset3 += loopHeight3;
         col3.style.transform = `translate3d(0, ${-offset3}px, 0)`;
       }
-
-      updateCardFading();
     }
 
     requestAnimationFrame(loop);
