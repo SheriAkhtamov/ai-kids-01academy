@@ -562,34 +562,40 @@ class LiquidCrystal3D {
       float wave(vec2 p, float t) {
         float h = 0.0;
         
-        // Ambient organic fluid swells
-        vec2 p1 = p * 2.2 + vec2(t * 0.12, t * 0.08);
-        vec2 p2 = p * 3.4 - vec2(t * 0.10, t * 0.16);
-        h += sin(p1.x + sin(p1.y * 1.3)) * 0.28;
-        h += cos(p2.y + sin(p2.x * 1.4)) * 0.22;
+        // Cyclical harmonic swells - eternal water
+        vec2 d1 = vec2(0.8, 0.6);
+        float phase1 = dot(p, d1) * 1.8 + t * 0.45;
+        h += sin(phase1) * 0.35;
 
-        // Domain warping for fluid viscosity
-        vec2 warp = vec2(sin(p.x * 2.5 + t * 0.2), cos(p.y * 2.5 + t * 0.22));
-        h += sin(length(p + warp * 0.35) * 3.8 - t * 0.45) * 0.20;
+        vec2 d2 = vec2(-0.6, 0.8);
+        float phase2 = dot(p, d2) * 2.2 - t * 0.35;
+        h += sin(phase2) * 0.25;
 
-        // Interactive mouse ripples
+        vec2 d3 = vec2(0.3, -0.95);
+        float phase3 = dot(p, d3) * 3.2 + t * 0.55;
+        h += sin(phase3 + sin(phase1 * 0.5)) * 0.15;
+
+        vec2 warp = vec2(sin(p.y * 1.5 + t * 0.3), cos(p.x * 1.5 + t * 0.35)) * 0.25;
+        h += sin(length(p + warp) * 2.5 - t * 0.4) * 0.18;
+
+        // Calm interactive ripples
         for (int i = 0; i < 6; i++) {
           vec4 rip = u_ripples[i];
           if (rip.w > 0.001) {
             float age = t - rip.z;
-            if (age > 0.0 && age < 3.0) {
+            if (age > 0.0 && age < 4.0) {
               float d = length(p - rip.xy);
-              float waveFront = abs(d - age * 0.65);
-              float amp = rip.w * exp(-d * 2.5) * exp(-age * 1.2);
-              h += sin(waveFront * 24.0) * amp * 0.45;
+              float waveFront = abs(d - age * 0.45);
+              float amp = rip.w * exp(-d * 1.8) * exp(-age * 0.7);
+              h += sin(waveFront * 11.0) * amp * 0.30;
             }
           }
         }
 
-        // Active cursor displacement
+        // Calm cursor displacement
         float cursorDist = length(p - u_mouse);
-        float cursorWave = sin(cursorDist * 16.0 - t * 3.5) * exp(-cursorDist * 4.0) * u_mouse_speed;
-        h += cursorWave * 0.35;
+        float cursorWave = sin(cursorDist * 8.0 - t * 1.8) * exp(-cursorDist * 2.8) * u_mouse_speed;
+        h += cursorWave * 0.22;
 
         return h;
       }
@@ -599,8 +605,8 @@ class LiquidCrystal3D {
         vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
         vec2 p = (uv - 0.5) * aspect;
 
-        float t = u_time * 0.8;
-        float eps = 0.004;
+        float t = u_time * 0.65;
+        float eps = 0.005;
 
         // Calculate 3D surface normal
         float hCenter = wave(p, t);
@@ -608,9 +614,9 @@ class LiquidCrystal3D {
         float hTop    = wave(p + vec2(0.0, eps), t);
 
         vec3 N = normalize(vec3(
-          (hCenter - hRight) * 4.5,
-          (hCenter - hTop) * 4.5,
-          eps * 2.5
+          (hCenter - hRight) * 3.2,
+          (hCenter - hTop) * 3.2,
+          eps * 3.0
         ));
 
         vec3 V = vec3(0.0, 0.0, 1.0);
@@ -618,31 +624,31 @@ class LiquidCrystal3D {
         float fresnel = pow(1.0 - NdotV, 3.2);
 
         // Lights
-        vec3 L1 = normalize(vec3(0.6, 0.7, 0.8));
+        vec3 L1 = normalize(vec3(0.5, 0.7, 0.8));
         vec3 H1 = normalize(L1 + V);
         float diff1 = max(dot(N, L1), 0.0);
-        float spec1 = pow(max(dot(N, H1), 0.0), 40.0);
+        float spec1 = pow(max(dot(N, H1), 0.0), 32.0);
 
         vec2 mouseP = (u_mouse - 0.5) * aspect;
-        vec3 L2 = normalize(vec3(mouseP - p, 0.4));
+        vec3 L2 = normalize(vec3(mouseP - p, 0.5));
         vec3 H2 = normalize(L2 + V);
         float mouseDist = length(mouseP - p);
-        float spec2 = pow(max(dot(N, H2), 0.0), 32.0) * exp(-mouseDist * 2.0);
+        float spec2 = pow(max(dot(N, H2), 0.0), 24.0) * exp(-mouseDist * 1.8);
 
         // Liquid Crystal Palette (Obsidian -> Deep Teal -> 01Academy Green -> Iridescent Violet)
-        vec3 cBase    = vec3(0.025, 0.045, 0.08);   // Deep obsidian
-        vec3 cEmerald = vec3(0.345, 0.800, 0.008);  // #58cc02 01Academy Green
-        vec3 cTeal    = vec3(0.020, 0.750, 0.650);  // Deep Cyan/Teal
-        vec3 cViolet  = vec3(0.550, 0.200, 0.850);  // Glancing angle violet
+        vec3 cBase    = vec3(0.020, 0.035, 0.065);   // Deep obsidian
+        vec3 cEmerald = vec3(0.345, 0.800, 0.008);   // #58cc02 01Academy Green
+        vec3 cTeal    = vec3(0.015, 0.650, 0.580);   // Deep Cyan/Teal
+        vec3 cViolet  = vec3(0.480, 0.180, 0.780);   // Glancing angle violet
 
-        float colorShift = clamp(hCenter * 0.8 + fresnel * 0.7 + diff1 * 0.3, 0.0, 1.0);
+        float colorShift = clamp(hCenter * 0.7 + fresnel * 0.65 + diff1 * 0.25, 0.0, 1.0);
         
-        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.1, 0.5, colorShift));
-        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.4, 0.85, colorShift));
-        liquidColor = mix(liquidColor, cViolet, fresnel * 0.65);
+        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.12, 0.55, colorShift));
+        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.45, 0.85, colorShift));
+        liquidColor = mix(liquidColor, cViolet, fresnel * 0.55);
 
-        vec3 specColor = mix(vec3(1.0), cEmerald, 0.4);
-        vec3 finalColor = liquidColor + specColor * (spec1 * 0.7 + spec2 * 0.9);
+        vec3 specColor = mix(vec3(1.0), cEmerald, 0.35);
+        vec3 finalColor = liquidColor + specColor * (spec1 * 0.5 + spec2 * 0.55);
 
         float vignette = smoothstep(1.3, 0.3, length(uv - 0.5));
         finalColor *= vignette;
@@ -728,19 +734,19 @@ class LiquidCrystal3D {
       const dist = Math.hypot(mx - this.lastX, my - this.lastY);
       const now = performance.now() * 0.001;
 
-      if (dist > 0.025 && now - this.lastRippleTime > 0.07) {
+      if (dist > 0.035 && now - this.lastRippleTime > 0.16) {
         this.ripples[this.rippleIndex] = {
           x: mx,
           y: my,
           time: now,
-          strength: Math.min(1.2, dist * 10.0)
+          strength: Math.min(0.55, dist * 4.0)
         };
         this.rippleIndex = (this.rippleIndex + 1) % 6;
         this.lastRippleTime = now;
       }
 
       this.targetMouse = { x: mx, y: my };
-      this.targetSpeed = Math.min(1.8, dist * 12.0);
+      this.targetSpeed = Math.min(0.7, dist * 4.5);
       this.lastX = mx;
       this.lastY = my;
     };
@@ -792,10 +798,10 @@ class LiquidCrystal3D {
       const gl = this.gl;
       gl.useProgram(this.program);
 
-      this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.12;
-      this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.12;
-      this.currentSpeed += (this.targetSpeed - this.currentSpeed) * 0.1;
-      this.targetSpeed *= 0.94;
+      this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.06;
+      this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.06;
+      this.currentSpeed += (this.targetSpeed - this.currentSpeed) * 0.05;
+      this.targetSpeed *= 0.96;
 
       const now = performance.now() * 0.001;
 
