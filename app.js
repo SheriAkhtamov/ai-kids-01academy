@@ -33,7 +33,7 @@ class AlligatorTracker {
   preloadFrames() {
     // Center frame
     this.centerFrame = new Image();
-    this.centerFrame.src = 'assets/gaze_frames/gaze_center.jpg';
+    this.centerFrame.src = 'assets/gaze_frames/gaze_center.png';
     this.centerFrame.onload = () => {
       this.loadedCount++;
       if (this.loadedCount >= this.totalFrames + 1) {
@@ -45,7 +45,7 @@ class AlligatorTracker {
     for (let i = 0; i < this.totalFrames; i++) {
       const img = new Image();
       const padIndex = String(i).padStart(2, '0');
-      img.src = `assets/gaze_frames/gaze_${padIndex}.jpg`;
+      img.src = `assets/gaze_frames/gaze_${padIndex}.png`;
       img.onload = () => {
         this.loadedCount++;
         if (this.loadedCount >= this.totalFrames + 1) {
