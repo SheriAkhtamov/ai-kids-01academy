@@ -548,17 +548,59 @@ body.scrolling-up .underline-animated::after {
   position: relative;
   overflow: hidden;
   height: 500px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 48px,
+    black calc(100% - 48px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 48px,
+    black calc(100% - 48px),
+    transparent 100%
+  );
 }
 
 @media (min-width: 640px) {
   .collage-viewport {
     height: 580px;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 60px,
+      black calc(100% - 60px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 60px,
+      black calc(100% - 60px),
+      transparent 100%
+    );
   }
 }
 
 @media (min-width: 1024px) {
   .collage-viewport {
     height: 620px;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 72px,
+      black calc(100% - 72px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 72px,
+      black calc(100% - 72px),
+      transparent 100%
+    );
   }
 }
 
