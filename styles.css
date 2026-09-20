@@ -541,4 +541,45 @@ body.scrolling-up .underline-animated::after {
 .scroll-trust-card.is-in-view:nth-child(2) { transition-delay: 0.14s; }
 .scroll-trust-card.is-in-view:nth-child(3) { transition-delay: 0.22s; }
 
+/* ==========================================
+   20. Tilted Parallel Opposite Collage
+   ========================================== */
+.collage-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.collage-stage {
+  transform: rotate(-3deg) scale(1.04);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.collage-col {
+  will-change: transform;
+  transition: transform 0.08s ease-out;
+}
+
+.collage-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background-color: #0f172a;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.collage-card:hover {
+  transform: scale(1.03) translateY(-4px);
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 10px 15px -5px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+.collage-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 

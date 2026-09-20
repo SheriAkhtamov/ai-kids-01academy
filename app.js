@@ -372,6 +372,75 @@ function initActiveNavSpy() {
 }
 
 // ==========================================
+// Tilted Parallel Opposite Collage Scroll Animation
+// ==========================================
+function initCollageParallax() {
+  const section = document.getElementById('works');
+  if (!section) return;
+
+  const col1 = section.querySelector('.collage-col-1');
+  const col2 = section.querySelector('.collage-col-2');
+  const col3 = section.querySelector('.collage-col-3');
+  if (!col1 || !col2) return;
+
+  let targetOffset = 0;
+  let currentOffset = 0;
+
+  const onScroll = () => {
+    const rect = section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const totalDist = windowHeight + rect.height;
+    const currentDist = windowHeight - rect.top;
+    const progress = Math.max(-0.2, Math.min(1.2, currentDist / totalDist));
+
+    // Calculate opposite displacement
+    targetOffset = (progress - 0.5) * 180;
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  onScroll();
+
+  function loop() {
+    currentOffset += (targetOffset - currentOffset) * 0.12;
+
+    // Columns 1 and 3 move in one direction, Column 2 moves in the OPPOSITE direction!
+    if (col1) col1.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+    if (col2) col2.style.transform = `translate3d(0, ${currentOffset * 1.3}px, 0)`;
+    if (col3) col3.style.transform = `translate3d(0, ${-currentOffset * 0.85}px, 0)`;
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+}
+
+function initCollageVideos() {
+  const videos = document.querySelectorAll('.collage-card video');
+  videos.forEach((video) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('muted', '');
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        const resume = () => {
+          video.play();
+          window.removeEventListener('scroll', resume);
+          window.removeEventListener('touchstart', resume);
+          window.removeEventListener('click', resume);
+        };
+        window.addEventListener('scroll', resume, { once: true, passive: true });
+        window.addEventListener('touchstart', resume, { once: true, passive: true });
+        window.addEventListener('click', resume, { once: true });
+      });
+    }
+  });
+}
+
+// ==========================================
 // App Initializer
 // ==========================================
 function initApp() {
@@ -381,6 +450,8 @@ function initApp() {
   initScrollProgressBar();
   initScrollAnimations();
   initActiveNavSpy();
+  initCollageParallax();
+  initCollageVideos();
 
   const form = document.getElementById('lead-form');
   const formMsg = document.getElementById('form-msg');
