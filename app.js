@@ -702,9 +702,10 @@ class LiquidCrystal3D {
       const vec3 cDark  = vec3(0.008, 0.014, 0.025);                         // deep slate-950
 
       // Procedural fluid light beam (monopo.vn algorithm)
-      vec3 getMonopoFluid(vec2 uv, float t) {
-        float n = snoise3(vec3(uv * 2.2, t * 0.18));
-        vec2 pRot = rotate2d(n * 1.8) * (uv - vec2(0.45, 0.5));
+      vec3 getMonopoFluid(vec2 uv, float t, vec2 mouse) {
+        vec2 mouseShift = (mouse - 0.5) * 0.12;
+        float n = snoise3(vec3((uv + mouseShift * 0.5) * 2.2, t * 0.18));
+        vec2 pRot = rotate2d(n * 1.8) * (uv - vec2(0.45, 0.5) + mouseShift);
 
         // Diagonal luminous aurora beam
         float flow = sin((pRot.x * 1.2 + pRot.y * 0.8) * 3.5 + n * 2.2 + t * 0.35) * 0.5 + 0.5;
@@ -729,51 +730,12 @@ class LiquidCrystal3D {
 
       void main() {
         vec2 uv = v_uv;
-        vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
         float t = u_time;
 
-        // 1. Base flowing fluid light beam
-        vec3 col = getMonopoFluid(uv, t);
+        // 1. Base flowing fluid light beam (subtly responsive to cursor)
+        vec3 col = getMonopoFluid(uv, t, u_mouse);
 
-        // 2. Optical Refraction Lens Sphere
-        vec2 lensCenter = u_mouse;
-        vec2 d = (uv - lensCenter) * aspect;
-        float dist = length(d);
-        float lensRadius = 0.26;
-
-        // Ambient drop shadow beneath the sphere
-        float shadow = smoothstep(lensRadius * 1.45, lensRadius * 0.85, dist) * 0.45;
-        col *= (1.0 - shadow);
-
-        // Inside the 3D optical sphere
-        if (dist < lensRadius) {
-          vec2 p = d / lensRadius;
-          float z = sqrt(max(0.0, 1.0 - dot(p, p)));
-          vec3 N = normalize(vec3(p.x, p.y, z * 1.35));
-
-          // Snell physical refraction with Chromatic Aberration (RGB split)
-          vec2 refractVec = N.xy * (1.0 - z * 0.5) * 0.095;
-          float r = getMonopoFluid(uv - refractVec * 0.92, t).r;
-          float g = getMonopoFluid(uv - refractVec * 1.00, t).g;
-          float b = getMonopoFluid(uv - refractVec * 1.08, t).b;
-          vec3 lensCol = vec3(r, g, b);
-
-          // Fresnel glass edge reflection rim
-          float fresnel = pow(1.0 - z, 3.5);
-          vec3 rim = vec3(0.85, 0.75, 0.50) * fresnel * 0.45;
-          lensCol += rim;
-
-          // Specular light glint
-          vec3 L = normalize(vec3(0.4, 0.6, 0.75));
-          float spec = pow(max(dot(N, L), 0.0), 28.0) * 0.55;
-          lensCol += vec3(spec);
-
-          // Smooth anti-aliased edge
-          float edgeAlpha = smoothstep(lensRadius, lensRadius - 0.007, dist);
-          col = mix(col, lensCol, edgeAlpha);
-        }
-
-        // 3. Cinematic Film Grain
+        // 2. Cinematic Film Grain
         vec2 uvRandom = uv;
         uvRandom.y *= filmGrain(vec2(uvRandom.y, fract(u_time * 7.13)));
         col += (filmGrain(uvRandom) - 0.5) * 0.055;
