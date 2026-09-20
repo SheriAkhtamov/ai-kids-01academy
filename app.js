@@ -372,6 +372,50 @@ function initActiveNavSpy() {
 }
 
 // ==========================================
+// Dynamic Inverted Header Theme Controller
+// (Dark over light screens, White over dark screens)
+// ==========================================
+function initHeaderThemeController() {
+  const header = document.getElementById('main-header');
+  const themedElements = document.querySelectorAll('[data-theme]');
+  if (!header || !themedElements.length) return;
+
+  const updateHeaderTheme = () => {
+    const headerRect = header.getBoundingClientRect();
+    // Probe point at vertical center of the sticky header
+    const probeY = headerRect.top + headerRect.height * 0.5;
+
+    let currentTheme = 'light';
+
+    themedElements.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= probeY && rect.bottom > probeY) {
+        currentTheme = el.dataset.theme || 'light';
+      }
+    });
+
+    // Rule:
+    // When touching white/light screen -> header has dark color of children's works screen (slate-950)
+    // When touching dark screen -> header changes back to white
+    if (currentTheme === 'light') {
+      if (!header.classList.contains('header-theme-dark')) {
+        header.classList.remove('header-theme-white');
+        header.classList.add('header-theme-dark');
+      }
+    } else {
+      if (!header.classList.contains('header-theme-white')) {
+        header.classList.remove('header-theme-dark');
+        header.classList.add('header-theme-white');
+      }
+    }
+  };
+
+  window.addEventListener('scroll', updateHeaderTheme, { passive: true });
+  window.addEventListener('resize', updateHeaderTheme, { passive: true });
+  updateHeaderTheme();
+}
+
+// ==========================================
 // Tilted Parallel Opposite Collage Scroll Animation & Edge Fading
 // ==========================================
 function initCollageParallax() {
@@ -837,6 +881,7 @@ function initApp() {
   initScrollProgressBar();
   initScrollAnimations();
   initActiveNavSpy();
+  initHeaderThemeController();
   initCollageParallax();
   initCollageVideos();
 

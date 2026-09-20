@@ -32,23 +32,23 @@
   <div id="scroll-progress"></div>
 
   <!-- ==========================================
-       1. NAVIGATION BAR (Figma Style)
+       1. NAVIGATION BAR (Dynamic Inverted Contrast)
        ========================================== -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+  <header id="main-header" class="sticky top-0 z-40 backdrop-blur-md header-theme-dark">
     <div class="max-w-6xl mx-auto px-6 h-18 py-3.5 flex items-center justify-between">
       
       <!-- Brand Logo -->
       <a href="#" class="flex items-center gap-2.5 group">
         <img src="assets/logo_green.png" alt="01Academy" class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
-        <span class="text-[11px] font-black uppercase text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">Kids</span>
+        <span class="header-badge text-[11px] font-black uppercase px-2 py-0.5 rounded-md">Kids</span>
       </a>
 
       <!-- Minimal Nav Links with Active Scroll Tracking -->
-      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-600">
-        <a href="#about" class="nav-link hover:text-duo-green transition-colors">О курсе</a>
-        <a href="#works" class="nav-link hover:text-duo-green transition-colors">Работы детей</a>
-        <a href="#faq" class="nav-link hover:text-duo-green transition-colors">Вопросы</a>
-        <a href="#contacts" class="nav-link hover:text-duo-green transition-colors">Контакты</a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold">
+        <a href="#about" class="nav-link">О курсе</a>
+        <a href="#works" class="nav-link">Работы детей</a>
+        <a href="#faq" class="nav-link">Вопросы</a>
+        <a href="#contacts" class="nav-link">Контакты</a>
       </nav>
 
       <!-- CTA -->
@@ -66,7 +66,7 @@
     <!-- ==========================================
          2. HERO SECTION (EXACT MATCH TO VIDEO BACKGROUND #fcfcfc)
          ========================================== -->
-    <section class="relative pt-12 pb-16 sm:pt-16 sm:pb-24 overflow-hidden" style="background-color: #fcfcfc;">
+    <section data-theme="light" class="relative pt-12 pb-16 sm:pt-16 sm:pb-24 overflow-hidden" style="background-color: #fcfcfc;">
       <div class="max-w-6xl mx-auto px-6">
         <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
@@ -110,7 +110,7 @@
     <!-- ==========================================
          3. ABOUT THE COURSE (AI KIDS)
          ========================================== -->
-    <section id="about" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-gradient-to-b from-[#fcfcfc] via-[#f3f9f5] to-[#ecf5ef] relative overflow-hidden">
+    <section id="about" data-theme="light" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-gradient-to-b from-[#fcfcfc] via-[#f3f9f5] to-[#ecf5ef] relative overflow-hidden">
       <div class="max-w-5xl mx-auto px-6 relative z-20">
         
         <!-- Header with Masked Scroll Text Reveal -->
@@ -210,7 +210,7 @@
     <!-- ==========================================
          4. CHILDREN'S PROJECTS (PARALLEL OPPOSITE COLLAGE)
          ========================================== -->
-    <section id="works" class="py-16 sm:py-24 bg-slate-950 overflow-hidden relative">
+    <section id="works" data-theme="dark" class="py-16 sm:py-24 bg-slate-950 overflow-hidden relative">
       <!-- Subtle Emerald Ambient Glow (Centered around title, smoothly feathered so top edge is 100% pure slate-950) -->
       <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_35%,rgba(88,204,2,0.12),transparent_70%)]"></div>
 
@@ -349,7 +349,7 @@
     <!-- ==========================================
          5. FAQ SECTION
          ========================================== -->
-    <section id="faq" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-[#f8fafc] relative overflow-hidden">
+    <section id="faq" data-theme="light" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-[#f8fafc] relative overflow-hidden">
       <div class="max-w-3xl mx-auto px-6 relative z-20">
         
         <div class="text-center mb-12 reveal-fade header-reveal">
@@ -407,7 +407,7 @@
     <!-- ==========================================
          6. APPLICATION FORM (LAST SCREEN WITH 3D LIQUID CRYSTAL)
          ========================================== -->
-    <section id="apply" class="py-20 sm:py-28 bg-slate-950 relative overflow-hidden">
+    <section id="apply" data-theme="dark" class="py-20 sm:py-28 bg-slate-950 relative overflow-hidden">
       <!-- Interactive 3D Liquid Crystal Wave Canvas -->
       <canvas id="liquid-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
@@ -466,7 +466,7 @@
   <!-- ==========================================
        7. MINIMAL FOOTER
        ========================================== -->
-  <footer id="contacts" class="py-12 bg-slate-950 border-t border-slate-900 text-slate-400">
+  <footer id="contacts" data-theme="dark" class="py-12 bg-slate-950 border-t border-slate-900 text-slate-400">
     <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-slate-400 font-bold">
       <div class="flex items-center gap-2.5">
         <img src="assets/logo_green.png" alt="01Academy" class="h-6 w-auto object-contain" />

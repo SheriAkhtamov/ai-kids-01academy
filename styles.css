@@ -645,5 +645,62 @@ body.scrolling-up .underline-animated::after {
   display: block;
 }
 
+/* ==========================================
+   DYNAMIC INVERTED HEADER THEME
+   (Dark over light screens, White over dark screens)
+   ========================================== */
+#main-header {
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
 
+#main-header .nav-link {
+  transition: color 0.25s ease;
+}
 
+#main-header .header-badge {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 1. Dark Header (when touching light screens: Hero, About, FAQ) - color of works screen slate-950 */
+#main-header.header-theme-dark {
+  background-color: rgba(2, 6, 23, 0.92);
+  border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+}
+
+#main-header.header-theme-dark .nav-link {
+  color: #94a3b8;
+}
+
+#main-header.header-theme-dark .nav-link:hover,
+#main-header.header-theme-dark .nav-link.active {
+  color: var(--duo-green);
+}
+
+#main-header.header-theme-dark .header-badge {
+  background-color: rgba(6, 78, 59, 0.6);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* 2. White Header (when touching dark screens: Works, Apply, Footer) */
+#main-header.header-theme-white {
+  background-color: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+#main-header.header-theme-white .nav-link {
+  color: #475569;
+}
+
+#main-header.header-theme-white .nav-link:hover,
+#main-header.header-theme-white .nav-link.active {
+  color: var(--duo-green);
+}
+
+#main-header.header-theme-white .header-badge {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
