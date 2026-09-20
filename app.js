@@ -687,20 +687,20 @@ class LiquidCrystal3D {
         float mouseDist = length(mouseP - p);
         float spec2 = pow(max(dot(N, H2), 0.0), 24.0) * exp(-mouseDist * 1.8);
 
-        // Liquid Crystal Palette (Obsidian -> Deep Teal -> 01Academy Green -> Iridescent Violet)
-        vec3 cBase    = vec3(0.020, 0.035, 0.065);   // Deep obsidian
-        vec3 cEmerald = vec3(0.345, 0.800, 0.008);   // #58cc02 01Academy Green
-        vec3 cTeal    = vec3(0.015, 0.650, 0.580);   // Deep Cyan/Teal
-        vec3 cViolet  = vec3(0.480, 0.180, 0.780);   // Glancing angle violet
+        // Liquid Crystal Palette (Deep Dark Slate-950 -> Subtle Emerald Glow -> Muted Dark Teal)
+        vec3 cBase    = vec3(0.008, 0.014, 0.025);   // Pure slate-950 (#020617)
+        vec3 cEmerald = vec3(0.040, 0.160, 0.070);   // Deep, calm emerald glow
+        vec3 cTeal    = vec3(0.012, 0.090, 0.120);   // Deep, muted teal/cyan ambient
+        vec3 cViolet  = vec3(0.025, 0.015, 0.050);   // Subtle dark violet edge
 
-        float colorShift = clamp(hCenter * 0.7 + fresnel * 0.65 + diff1 * 0.25, 0.0, 1.0);
+        float colorShift = clamp(hCenter * 0.45 + fresnel * 0.4 + diff1 * 0.15, 0.0, 1.0);
         
-        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.12, 0.55, colorShift));
-        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.45, 0.85, colorShift));
-        liquidColor = mix(liquidColor, cViolet, fresnel * 0.55);
+        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.25, 0.80, colorShift) * 0.45);
+        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.50, 0.95, colorShift) * 0.35);
+        liquidColor = mix(liquidColor, cViolet, fresnel * 0.20);
 
-        vec3 specColor = mix(vec3(1.0), cEmerald, 0.35);
-        vec3 finalColor = liquidColor + specColor * (spec1 * 0.5 + spec2 * 0.55);
+        vec3 specColor = mix(vec3(0.4, 0.7, 0.5), cEmerald, 0.5);
+        vec3 finalColor = liquidColor + specColor * (spec1 * 0.15 + spec2 * 0.22);
 
         float vignette = smoothstep(1.3, 0.3, length(uv - 0.5));
         finalColor *= vignette;
