@@ -123,69 +123,82 @@
           </p>
         </div>
 
-        <!-- Single Course Presentation Card with Interactive Elements -->
-        <div class="figma-course-card scroll-block-reveal p-7 sm:p-10 mb-8">
-          <div class="grid md:grid-cols-12 gap-8 items-center">
-            
-            <!-- Left: What the student learns with Scroll Feature Stagger -->
-            <div class="md:col-span-7 space-y-6">
-              <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                <span>🎯 Чему учится ребёнок</span>
-              </div>
-
-              <ul class="space-y-4 text-sm sm:text-base text-slate-700 font-semibold">
-                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
-                  <span><strong>Промптинг:</strong> формулировать задачи для нейросетей простыми и точными словами.</span>
-                </li>
-                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
-                  <span><strong>Контент и визуалы:</strong> генерировать иллюстрации, персонажей, комиксы, сценарии и видео.</span>
-                </li>
-                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
-                  <span><strong>Школьные проекты:</strong> собирать материалы и готовить понятные презентации и доклады.</span>
-                </li>
-                <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                  <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
-                  <span><strong>Критическое мышление:</strong> проверять факты, находить ошибки AI и <span class="scroll-highlight">не списывать слепо</span>.</span>
-                </li>
-              </ul>
+        <div class="grid lg:grid-cols-12 gap-8 items-center mb-8">
+          
+          <!-- Left Column: Interactive Waving Character (Scroll Linked) -->
+          <div class="lg:col-span-4 flex items-center justify-center">
+            <div class="w-full max-w-[380px] aspect-[600/460] flex items-center justify-center">
+              <canvas id="wave-canvas" width="600" height="460" class="w-full h-full object-contain"></canvas>
             </div>
-
-            <!-- Right: Course format & CTA with Pop Stats on Scroll -->
-            <div class="md:col-span-5 scroll-block-reveal bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 space-y-4">
-              <div class="text-xs font-black uppercase text-slate-400 tracking-wider">Параметры курса</div>
-              
-              <div class="space-y-3 text-xs sm:text-sm text-slate-800 font-bold">
-                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
-                  <span class="text-slate-500 font-medium">Возраст:</span>
-                  <span class="scroll-stat-badge">7–18 лет (группы по возрасту)</span>
-                </div>
-                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
-                  <span class="text-slate-500 font-medium">График:</span>
-                  <span class="scroll-stat-badge">90 мин / выходные</span>
-                </div>
-                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
-                  <span class="text-slate-500 font-medium">Группа:</span>
-                  <span class="scroll-stat-badge">до 12 учеников</span>
-                </div>
-                <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2.5">
-                  <span class="text-slate-500 font-medium">Оборудование:</span>
-                  <span class="scroll-stat-badge text-emerald-700">Предоставляем</span>
-                </div>
-                <div class="stat-row flex items-center justify-between pt-1">
-                  <span class="text-slate-500 font-medium">Итог курса:</span>
-                  <span class="scroll-stat-badge text-duo-green font-extrabold scroll-highlight">Личный проект</span>
-                </div>
-              </div>
-
-              <a href="#apply" class="btn-duo-primary scroll-button w-full py-3.5 text-sm mt-4 inline-flex items-center justify-center">
-                Записаться на курс
-              </a>
-            </div>
-
           </div>
+
+          <!-- Right Column: Course Presentation Card with Interactive Elements -->
+          <div class="lg:col-span-8">
+            <div class="figma-course-card scroll-block-reveal p-7 sm:p-9">
+              <div class="grid md:grid-cols-12 gap-6 items-center">
+                
+                <!-- Left: What the student learns with Scroll Feature Stagger -->
+                <div class="md:col-span-7 space-y-5">
+                  <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
+                    <span>🎯 Чему учится ребёнок</span>
+                  </div>
+
+                  <ul class="space-y-3.5 text-sm text-slate-700 font-semibold">
+                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                      <span><strong>Промптинг:</strong> формулировать задачи для нейросетей простыми и точными словами.</span>
+                    </li>
+                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                      <span><strong>Контент и визуалы:</strong> генерировать иллюстрации, персонажей, комиксы, сценарии и видео.</span>
+                    </li>
+                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                      <span><strong>Школьные проекты:</strong> собирать материалы и готовить понятные презентации и доклады.</span>
+                    </li>
+                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
+                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5 shadow-xs">✓</span>
+                      <span><strong>Критическое мышление:</strong> проверять факты, находить ошибки AI и <span class="scroll-highlight">не списывать слепо</span>.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Right: Course format & CTA with Pop Stats on Scroll -->
+                <div class="md:col-span-5 scroll-block-reveal bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-5 space-y-3.5">
+                  <div class="text-xs font-black uppercase text-slate-400 tracking-wider">Параметры курса</div>
+                  
+                  <div class="space-y-2.5 text-xs text-slate-800 font-bold">
+                    <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2">
+                      <span class="text-slate-500 font-medium">Возраст:</span>
+                      <span class="scroll-stat-badge">7–18 лет</span>
+                    </div>
+                    <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2">
+                      <span class="text-slate-500 font-medium">График:</span>
+                      <span class="scroll-stat-badge">90 мин / вых.</span>
+                    </div>
+                    <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2">
+                      <span class="text-slate-500 font-medium">Группа:</span>
+                      <span class="scroll-stat-badge">до 12 учеников</span>
+                    </div>
+                    <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2">
+                      <span class="text-slate-500 font-medium">Техника:</span>
+                      <span class="scroll-stat-badge text-emerald-700">Предоставляем</span>
+                    </div>
+                    <div class="stat-row flex items-center justify-between pt-0.5">
+                      <span class="text-slate-500 font-medium">Итог:</span>
+                      <span class="scroll-stat-badge text-duo-green font-extrabold scroll-highlight">Личный проект</span>
+                    </div>
+                  </div>
+
+                  <a href="#apply" class="btn-duo-primary scroll-button w-full py-3 text-sm mt-3 inline-flex items-center justify-center">
+                    Записаться на курс
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>

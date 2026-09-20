@@ -142,6 +142,86 @@ class AlligatorTracker {
 }
 
 // ==========================================
+// Waving Character Scroll Tracker (Section 2)
+// ==========================================
+class WaveCharacterTracker {
+  constructor() {
+    this.canvas = document.getElementById('wave-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.section = document.getElementById('about');
+    this.totalFrames = 120;
+    this.frames = [];
+    this.loadedCount = 0;
+    this.isLoaded = false;
+    this.currentFrame = 0;
+    this.targetFrame = 0;
+    this.lastDrawnIndex = -1;
+
+    this.preloadFrames();
+    this.bindEvents();
+    this.animate();
+  }
+
+  preloadFrames() {
+    for (let i = 0; i < this.totalFrames; i++) {
+      const img = new Image();
+      const padIndex = String(i).padStart(3, '0');
+      img.src = `assets/wave_frames/wave_${padIndex}.png`;
+      img.onload = () => {
+        this.loadedCount++;
+        if (this.loadedCount >= this.totalFrames) {
+          this.isLoaded = true;
+          this.drawFrame(0);
+        }
+      };
+      this.frames.push(img);
+    }
+  }
+
+  bindEvents() {
+    const onScroll = () => {
+      if (!this.section) return;
+      const rect = this.section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Start when the top of the section enters the bottom of the window
+      // End when the bottom of the section leaves the top of the window
+      const totalDistance = windowHeight + rect.height;
+      const currentDistance = windowHeight - rect.top;
+      const progress = Math.max(0, Math.min(1, currentDistance / totalDistance));
+
+      this.targetFrame = progress * (this.totalFrames - 1);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
+  }
+
+  animate() {
+    if (this.isLoaded) {
+      this.currentFrame += (this.targetFrame - this.currentFrame) * 0.15;
+      const frameIdx = Math.round(this.currentFrame);
+      if (frameIdx !== this.lastDrawnIndex && frameIdx >= 0 && frameIdx < this.totalFrames) {
+        this.drawFrame(frameIdx);
+        this.lastDrawnIndex = frameIdx;
+      }
+    }
+    requestAnimationFrame(() => this.animate());
+  }
+
+  drawFrame(index) {
+    if (!this.ctx || !this.canvas) return;
+    const frame = this.frames[index];
+    if (frame && frame.complete) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(frame, 0, 0, this.canvas.width, this.canvas.height);
+    }
+  }
+}
+
+// ==========================================
 // Text Rotator & Scroll Animations
 // ==========================================
 function initTextRotator() {
@@ -296,6 +376,7 @@ function initActiveNavSpy() {
 // ==========================================
 function initApp() {
   new AlligatorTracker();
+  new WaveCharacterTracker();
   initTextRotator();
   initScrollProgressBar();
   initScrollAnimations();
