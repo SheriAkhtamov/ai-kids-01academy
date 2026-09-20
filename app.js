@@ -609,103 +609,128 @@ class LiquidCrystal3D {
       uniform float u_time;
       uniform vec2 u_mouse;
       uniform float u_mouse_speed;
-      uniform vec4 u_ripples[6];
 
-      float wave(vec2 p, float t) {
-        float h = 0.0;
-        
-        // Cyclical harmonic swells - eternal water
-        vec2 d1 = vec2(0.8, 0.6);
-        float phase1 = dot(p, d1) * 1.8 + t * 0.45;
-        h += sin(phase1) * 0.35;
+      // 3D Simplex Noise (from monopo.vn)
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+      vec4 permute(vec4 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+      vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
 
-        vec2 d2 = vec2(-0.6, 0.8);
-        float phase2 = dot(p, d2) * 2.2 - t * 0.35;
-        h += sin(phase2) * 0.25;
+      float snoise(vec3 v) {
+        const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+        vec3 i = floor(v + dot(v, C.yyy));
+        vec3 x0 = v - i + dot(i, C.xxx);
+        vec3 g = step(x0.yzx, x0.xyz);
+        vec3 l = 1.0 - g;
+        vec3 i1 = min(g.xyz, l.zxy);
+        vec3 i2 = max(g.xyz, l.zxy);
+        vec3 x1 = x0 - i1 + C.xxx;
+        vec3 x2 = x0 - i2 + C.yyy;
+        vec3 x3 = x0 - D.yyy;
+        i = mod(i, 289.0);
+        vec4 p = permute(permute(permute(
+                   i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                 + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                 + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+        float n_ = 0.142857142857;
+        vec3 ns = n_ * D.wyz - D.xzx;
+        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+        vec4 x_ = floor(j * ns.z);
+        vec4 y_ = floor(j - 7.0 * x_);
+        vec4 x = x_ * ns.x + ns.yyyy;
+        vec4 y = y_ * ns.x + ns.yyyy;
+        vec4 h = 1.0 - abs(x) - abs(y);
+        vec4 b0 = vec4(x.xy, y.xy);
+        vec4 b1 = vec4(x.zw, y.zw);
+        vec4 s0 = floor(b0)*2.0 + 1.0;
+        vec4 s1 = floor(b1)*2.0 + 1.0;
+        vec4 sh = -step(h, vec4(0.0));
+        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+        vec3 p0 = vec3(a0.xy, h.x);
+        vec3 p1 = vec3(a0.zw, h.y);
+        vec3 p2 = vec3(a1.xy, h.z);
+        vec3 p3 = vec3(a1.zw, h.w);
+        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+        p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+        m = m * m;
+        return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+      }
 
-        vec2 d3 = vec2(0.3, -0.95);
-        float phase3 = dot(p, d3) * 3.2 + t * 0.55;
-        h += sin(phase3 + sin(phase1 * 0.5)) * 0.15;
+      mat2 rotate2d(float angle) {
+        return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+      }
 
-        vec2 warp = vec2(sin(p.y * 1.5 + t * 0.3), cos(p.x * 1.5 + t * 0.35)) * 0.25;
-        h += sin(length(p + warp) * 2.5 - t * 0.4) * 0.18;
+      // Procedural Fluid Background (Monopo-inspired with 01Academy dark slate-950 palette)
+      vec3 getFluidColor(vec2 uv, float t) {
+        float n1 = snoise(vec3(uv * 1.5, t * 0.12));
+        vec2 pRot = rotate2d(n1 * 1.6) * (uv - 0.5);
+        float n2 = snoise(vec3(pRot * 2.0, t * 0.18 + 4.0));
+        float lines = sin(pRot.x * 6.5 + n2 * 2.8 + t * 0.3) * 0.5 + 0.5;
+        lines = smoothstep(0.2, 0.85, lines);
 
-        // Calm interactive ripples
-        for (int i = 0; i < 6; i++) {
-          vec4 rip = u_ripples[i];
-          if (rip.w > 0.001) {
-            float age = t - rip.z;
-            if (age > 0.0 && age < 4.0) {
-              float d = length(p - rip.xy);
-              float waveFront = abs(d - age * 0.45);
-              float amp = rip.w * exp(-d * 1.8) * exp(-age * 0.7);
-              h += sin(waveFront * 11.0) * amp * 0.30;
-            }
-          }
-        }
+        // Deep elegant palette
+        vec3 cBase    = vec3(0.008, 0.014, 0.025);   // Pure slate-950 (#020617)
+        vec3 cTeal    = vec3(0.015, 0.095, 0.120);   // Deep muted dark teal
+        vec3 cEmerald = vec3(0.035, 0.160, 0.070);   // Calm emerald accent
+        vec3 cAccent  = vec3(0.070, 0.240, 0.120);   // Soft crest glimmer
 
-        // Calm cursor displacement
-        float cursorDist = length(p - u_mouse);
-        float cursorWave = sin(cursorDist * 8.0 - t * 1.8) * exp(-cursorDist * 2.8) * u_mouse_speed;
-        h += cursorWave * 0.22;
-
-        return h;
+        vec3 col = mix(cBase, cTeal, lines * 0.50);
+        col = mix(col, cEmerald, smoothstep(0.4, 0.9, n2 * 0.5 + 0.5) * 0.40);
+        col = mix(col, cAccent, smoothstep(0.75, 0.98, lines) * 0.30);
+        return col;
       }
 
       void main() {
         vec2 uv = v_uv;
         vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
-        vec2 p = (uv - 0.5) * aspect;
+        float t = u_time * 0.75;
 
-        float t = u_time * 0.65;
-        float eps = 0.005;
+        // 1. Base procedural fluid
+        vec3 col = getFluidColor(uv, t);
 
-        // Calculate 3D surface normal
-        float hCenter = wave(p, t);
-        float hRight  = wave(p + vec2(eps, 0.0), t);
-        float hTop    = wave(p + vec2(0.0, eps), t);
+        // 2. Monopo Optical Refraction Lens
+        vec2 lensCenter = u_mouse;
+        vec2 d = (uv - lensCenter) * aspect;
+        float dist = length(d);
+        float lensRadius = 0.28;
 
-        vec3 N = normalize(vec3(
-          (hCenter - hRight) * 3.2,
-          (hCenter - hTop) * 3.2,
-          eps * 3.0
-        ));
+        // Ambient shadow beneath the lens
+        float shadow = smoothstep(lensRadius * 1.35, lensRadius * 0.85, dist) * 0.35;
+        col *= (1.0 - shadow);
 
-        vec3 V = vec3(0.0, 0.0, 1.0);
-        float NdotV = clamp(dot(N, V), 0.0, 1.0);
-        float fresnel = pow(1.0 - NdotV, 3.2);
+        if (dist < lensRadius) {
+          vec2 p = d / lensRadius;
+          float z = sqrt(max(0.0, 1.0 - dot(p, p)));
+          vec3 N = normalize(vec3(p.x, p.y, z * 1.4));
 
-        // Lights
-        vec3 L1 = normalize(vec3(0.5, 0.7, 0.8));
-        vec3 H1 = normalize(L1 + V);
-        float diff1 = max(dot(N, L1), 0.0);
-        float spec1 = pow(max(dot(N, H1), 0.0), 32.0);
+          // Physical Refraction with Chromatic Aberration
+          vec2 refractVec = N.xy * (1.0 - z * 0.5) * 0.085;
+          float r = getFluidColor(uv - refractVec * 0.92, t).r;
+          float g = getFluidColor(uv - refractVec * 1.00, t).g;
+          float b = getFluidColor(uv - refractVec * 1.08, t).b;
+          vec3 lensCol = vec3(r, g, b);
 
-        vec2 mouseP = (u_mouse - 0.5) * aspect;
-        vec3 L2 = normalize(vec3(mouseP - p, 0.5));
-        vec3 H2 = normalize(L2 + V);
-        float mouseDist = length(mouseP - p);
-        float spec2 = pow(max(dot(N, H2), 0.0), 24.0) * exp(-mouseDist * 1.8);
+          // Fresnel glass edge reflection
+          float fresnel = pow(1.0 - z, 3.2);
+          lensCol += vec3(0.06, 0.25, 0.16) * fresnel * 0.65;
 
-        // Liquid Crystal Palette (Deep Dark Slate-950 -> Subtle Emerald Glow -> Muted Dark Teal)
-        vec3 cBase    = vec3(0.008, 0.014, 0.025);   // Pure slate-950 (#020617)
-        vec3 cEmerald = vec3(0.040, 0.160, 0.070);   // Deep, calm emerald glow
-        vec3 cTeal    = vec3(0.012, 0.090, 0.120);   // Deep, muted teal/cyan ambient
-        vec3 cViolet  = vec3(0.025, 0.015, 0.050);   // Subtle dark violet edge
+          // Subtle directional specular glint
+          vec3 L = normalize(vec3(0.4, 0.6, 0.8));
+          float spec = pow(max(dot(N, L), 0.0), 32.0);
+          lensCol += vec3(0.25, 0.65, 0.40) * spec * 0.40;
 
-        float colorShift = clamp(hCenter * 0.45 + fresnel * 0.4 + diff1 * 0.15, 0.0, 1.0);
-        
-        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.25, 0.80, colorShift) * 0.45);
-        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.50, 0.95, colorShift) * 0.35);
-        liquidColor = mix(liquidColor, cViolet, fresnel * 0.20);
+          // Anti-aliased boundary blend
+          float edgeAlpha = smoothstep(lensRadius, lensRadius - 0.006, dist);
+          col = mix(col, lensCol, edgeAlpha);
+        }
 
-        vec3 specColor = mix(vec3(0.4, 0.7, 0.5), cEmerald, 0.5);
-        vec3 finalColor = liquidColor + specColor * (spec1 * 0.15 + spec2 * 0.22);
-
+        // Soft edge vignette
         float vignette = smoothstep(1.3, 0.3, length(uv - 0.5));
-        finalColor *= vignette;
+        col *= vignette;
 
-        gl_FragColor = vec4(finalColor, 1.0);
+        gl_FragColor = vec4(col, 1.0);
       }
     `;
 
@@ -741,7 +766,6 @@ class LiquidCrystal3D {
     this.uTime = gl.getUniformLocation(this.program, 'u_time');
     this.uMouse = gl.getUniformLocation(this.program, 'u_mouse');
     this.uMouseSpeed = gl.getUniformLocation(this.program, 'u_mouse_speed');
-    this.uRipples = gl.getUniformLocation(this.program, 'u_ripples');
   }
 
   initBuffers() {
@@ -763,16 +787,9 @@ class LiquidCrystal3D {
   }
 
   initRipples() {
-    this.ripples = [];
-    for (let i = 0; i < 6; i++) {
-      this.ripples.push({ x: 0, y: 0, time: -100, strength: 0 });
-    }
-    this.rippleIndex = 0;
-    this.lastRippleTime = 0;
-    this.lastX = 0.5;
-    this.lastY = 0.5;
-    this.targetMouse = { x: 0.5, y: 0.5 };
-    this.currentMouse = { x: 0.5, y: 0.5 };
+    this.hasUserInteracted = false;
+    this.targetMouse = { x: 0.65, y: 0.5 };
+    this.currentMouse = { x: 0.65, y: 0.5 };
     this.targetSpeed = 0;
     this.currentSpeed = 0;
   }
@@ -783,24 +800,8 @@ class LiquidCrystal3D {
       const mx = (clientX - rect.left) / rect.width;
       const my = 1.0 - (clientY - rect.top) / rect.height;
 
-      const dist = Math.hypot(mx - this.lastX, my - this.lastY);
-      const now = performance.now() * 0.001;
-
-      if (dist > 0.035 && now - this.lastRippleTime > 0.16) {
-        this.ripples[this.rippleIndex] = {
-          x: mx,
-          y: my,
-          time: now,
-          strength: Math.min(0.55, dist * 4.0)
-        };
-        this.rippleIndex = (this.rippleIndex + 1) % 6;
-        this.lastRippleTime = now;
-      }
-
+      this.hasUserInteracted = true;
       this.targetMouse = { x: mx, y: my };
-      this.targetSpeed = Math.min(0.7, dist * 4.5);
-      this.lastX = mx;
-      this.lastY = my;
     };
 
     window.addEventListener('mousemove', (e) => {
@@ -850,26 +851,22 @@ class LiquidCrystal3D {
       const gl = this.gl;
       gl.useProgram(this.program);
 
-      this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.06;
-      this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.06;
-      this.currentSpeed += (this.targetSpeed - this.currentSpeed) * 0.05;
-      this.targetSpeed *= 0.96;
-
       const now = performance.now() * 0.001;
+
+      // Gentle idle drift when user hasn't moved mouse yet
+      if (!this.hasUserInteracted) {
+        this.targetMouse.x = 0.65 + Math.sin(now * 0.4) * 0.10;
+        this.targetMouse.y = 0.50 + Math.cos(now * 0.3) * 0.08;
+      }
+
+      // Smooth spring damping towards target (like Monopo's direction easing)
+      this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.055;
+      this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.055;
 
       gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
       gl.uniform1f(this.uTime, now);
       gl.uniform2f(this.uMouse, this.currentMouse.x, this.currentMouse.y);
       gl.uniform1f(this.uMouseSpeed, this.currentSpeed);
-
-      const flatRipples = new Float32Array(24);
-      for (let i = 0; i < 6; i++) {
-        flatRipples[i * 4 + 0] = this.ripples[i].x;
-        flatRipples[i * 4 + 1] = this.ripples[i].y;
-        flatRipples[i * 4 + 2] = this.ripples[i].time;
-        flatRipples[i * 4 + 3] = this.ripples[i].strength;
-      }
-      gl.uniform4fv(this.uRipples, flatRipples);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
