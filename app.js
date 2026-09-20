@@ -568,143 +568,62 @@ function initCollageVideos() {
 // ==========================================
 // 3D Liquid Crystal Interactive Wave Surface (WebGL)
 // ==========================================
+// // ==========================================
 // monopo.vn 3D WebGL Background & Optical Refraction Lens
-// Extracted and replicated from monopo.vn production build
+// Self-contained, robust WebGL implementation
 // ==========================================
 class LiquidCrystal3D {
   constructor() {
-    this.canvas = document.getElementById('liquid-canvas');
-    this.section = document.getElementById('apply');
-    if (!this.canvas || !this.section) return;
+    try {
+      this.canvas = document.getElementById('liquid-canvas');
+      this.section = document.getElementById('apply');
+      if (!this.canvas || !this.section) return;
 
-    if (typeof THREE === 'undefined') {
-      console.warn('Three.js is required for LiquidCrystal3D');
-      return;
+      this.gl = this.canvas.getContext('webgl', {
+        alpha: false,
+        antialias: true,
+        powerPreference: 'high-performance'
+      }) || this.canvas.getContext('experimental-webgl');
+
+      if (!this.gl) {
+        console.warn('WebGL not supported for LiquidCrystal3D');
+        return;
+      }
+
+      this.initShaders();
+      this.initBuffers();
+      this.initTracking();
+      this.bindEvents();
+      this.resize();
+      this.loop();
+    } catch (err) {
+      console.warn('Failed to initialize LiquidCrystal3D:', err);
     }
-
-    this.mouse = { x: 0, y: 0 };
-    this.mouseVec = new THREE.Vector2(0, 0);
-    this.cameraPosition = new THREE.Vector2(0, 0);
-    this.direction = new THREE.Vector2(0, 0);
-    this.cameraEasing = { x: 0.6, y: 0.3 };
-    this.hasUserInteracted = false;
-    this.isVisible = false;
-
-    this.initScene();
-    this.initBackground();
-    this.initLens();
-    this.initComposer();
-    this.bindEvents();
-    this.resize();
-    this.loop();
   }
 
-  initScene() {
-    const rect = this.section.getBoundingClientRect();
-    const width = rect.width || window.innerWidth;
-    const height = rect.height || window.innerHeight;
-
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20);
-    this.camera.position.set(0, 0, -4);
-    this.camera.lookAt(this.scene.position);
-
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
-      precision: 'highp',
-      powerPreference: 'high-performance',
-      alpha: true,
-      antialias: true
-    });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    this.renderer.setClearColor(0x020617, 1);
-    this.renderer.setSize(width, height);
-
-    this.clock = new THREE.Clock();
-    this.clock.start();
-  }
-
-  initBackground() {
-    const camera = this.camera;
-    const t = camera.fov * Math.PI / 180;
-    this.fovY = Math.abs(camera.position.z * Math.tan(t / 2) * 2);
-
-    const isMobile = window.innerWidth < 1024;
-    this.bgSpeed = 30; // monopo.vn revealed speed
-
-    this.bgUniforms = {
-      uTime: { value: 0 },
-      uBaseFirstColor: { type: 'vec3', value: new THREE.Color(120 / 255, 158 / 255, 113 / 255) }, // sage olive [120, 158, 113]
-      uBaseSecondColor: { type: 'vec3', value: new THREE.Color(224 / 255, 148 / 255, 66 / 255) }, // warm amber [224, 148, 66]
-      uAccentColor: { type: 'vec3', value: new THREE.Color(0, 0, 0) }, // deep black [0, 0, 0]
-      uZoom: { type: '1f', value: isMobile ? 0.1 : 0.2 },
-      uBaseFrequency: { type: '1f', value: 2.6 },
-      uAccentOpacity: { type: 'float', value: 1.0 },
-      uAccentFrequency: { type: '1f', value: 2.2 },
-      uNoiseIntensity: { type: '1f', value: 0.0 },
-      uOpacityBackground: { type: '1f', value: 0.95 },
-      uBgProgress: { type: '1f', value: 1.0 },
-      u_res: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-    };
-
-    const vertexShader = `
-      varying vec3 vUv;
+  initShaders() {
+    const gl = this.gl;
+    const vsSource = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
       void main() {
-        vUv = position;
-        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * modelViewPosition;
+        v_uv = (a_position + 1.0) * 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
       }
     `;
 
-    const fragmentShader = `
-      varying vec3 vUv;
+    const fsSource = `
+      precision highp float;
+      varying vec2 v_uv;
 
-      uniform vec3 uBaseFirstColor;
-      uniform vec3 uBaseSecondColor;
-      uniform vec3 uAccentColor;
-      uniform float uBgProgress;
-      uniform float uAccentOpacity;
-      uniform float uBaseFrequency;
-      uniform float uAccentFrequency;
-      uniform float uNoiseIntensity;
-      uniform float uOpacityBackground;
-      uniform float uTime;
-      uniform float uZoom;
-      uniform vec2 u_res;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform vec2 u_mouse;
 
+      // 3D Simplex Noise (monopo.vn algorithm)
       vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
       vec4 permute(vec4 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
       vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-      vec3 fade(vec3 t) { return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); }
-
-      float random (in vec2 st) {
-        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-      }
-      float mod289(float x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-      vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-      vec4 perm(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
-
-      float noise(vec3 p) {
-        vec3 a = floor(p);
-        vec3 d = p - a;
-        d = d * d * (3.0 - 2.0 * d);
-
-        vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
-        vec4 k1 = perm(b.xyxy);
-        vec4 k2 = perm(k1.xyxy + b.zzww);
-
-        vec4 c = k2 + a.zzzz;
-        vec4 k3 = perm(c);
-        vec4 k4 = perm(c + 1.0);
-
-        vec4 o1 = fract(k3 * (1.0 / 41.0));
-        vec4 o2 = fract(k4 * (1.0 / 41.0));
-
-        vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
-        vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
-
-        return o4.y * d.y + o4.x * (1.0 - d.y);
-      }
 
       float snoise3(vec3 v) {
         const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);
@@ -774,208 +693,163 @@ class LiquidCrystal3D {
       float lines(in vec2 pos, float b) {
         float scale = 10.0;
         pos *= scale;
-        return smoothstep(0.0, 0.5 + b * 0.5, abs((sin(pos.x * 3.1415) + b * 2.0)) * 0.5);
+        return smoothstep(0.0, 0.5 + b * 0.5, abs((sin(pos.x * 3.14159) + b * 2.0)) * 0.5);
       }
 
-      float circle(in vec2 _st, in float _radius, in float blurriness) {
-        vec2 dist = _st;
-        return 1.0 - smoothstep(_radius - (_radius * blurriness), _radius + (_radius * blurriness), dot(dist, dist) * 4.0);
+      // Exact monopo.vn palette
+      const vec3 cBase1 = vec3(120.0 / 255.0, 158.0 / 255.0, 113.0 / 255.0); // sage olive green
+      const vec3 cBase2 = vec3(224.0 / 255.0, 148.0 / 255.0, 66.0 / 255.0);  // warm amber gold
+      const vec3 cDark  = vec3(0.008, 0.014, 0.025);                         // deep slate-950
+
+      // Procedural fluid light beam (monopo.vn algorithm)
+      vec3 getMonopoFluid(vec2 uv, float t) {
+        float n = snoise3(vec3(uv * 2.2, t * 0.18));
+        vec2 pRot = rotate2d(n * 1.8) * (uv - vec2(0.45, 0.5));
+
+        // Diagonal luminous aurora beam
+        float flow = sin((pRot.x * 1.2 + pRot.y * 0.8) * 3.5 + n * 2.2 + t * 0.35) * 0.5 + 0.5;
+        flow = smoothstep(0.12, 0.88, flow);
+
+        // Organic ripples
+        float p1 = lines(pRot * 0.3, 0.5);
+        vec3 baseMix = mix(cBase1, cBase2, p1);
+
+        // Falloff into velvety slate-950
+        float distFromBeam = abs(pRot.x * 0.8 - pRot.y * 1.2);
+        float beamMask = smoothstep(0.65, 0.05, distFromBeam) * flow;
+
+        return mix(cDark, baseMix, beamMask);
       }
 
-      float dist(vec2 p0, vec2 pf) {
-        return sqrt((pf.x - p0.x) * (pf.x - p0.x) + (pf.y - p0.y) * (pf.y - p0.y));
+      // Gelfond constant PRNG for analog film grain
+      float filmGrain(vec2 p) {
+        vec2 K1 = vec2(23.14069263277926, 2.665144142690225);
+        return fract(cos(dot(p, K1)) * 12345.6789);
       }
 
       void main() {
-        vec2 resolution = u_res * PR;
-        vec3 uv = vUv.xyz;
-        float progress = uBgProgress;
+        vec2 uv = v_uv;
+        vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
+        float t = u_time;
 
-        float baseNoise = noise(uBaseFrequency * uv + uTime);
-        vec2 basePos = rotate2d(baseNoise) * uv.xy * uZoom;
-        float basePattern = lines(basePos, 0.5);
+        // 1. Base flowing fluid light beam
+        vec3 col = getMonopoFluid(uv, t);
 
-        vec2 st = gl_FragCoord.xy / resolution.xy - vec2(0.5);
-        st.y *= resolution.y / resolution.x;
-        float c = circle(st, 0.2 + progress * 10.0, 2.0);
-        float offX = uv.x + sin(uv.y + uTime * 2.0);
-        float offY = uv.y - uTime * 0.2 - cos(uTime * 2.0) * 0.1;
+        // 2. Optical Refraction Lens Sphere
+        vec2 lensCenter = u_mouse;
+        vec2 d = (uv - lensCenter) * aspect;
+        float dist = length(d);
+        float lensRadius = 0.26;
 
-        float nc = (snoise3(vec3(offX, offY, uTime * 5.0) * 2.0)) * 0.03;
-        float d = dist(resolution.xy * 0.5, gl_FragCoord.xy) * (1.0 - progress) * 0.003;
+        // Ambient drop shadow beneath the sphere
+        float shadow = smoothstep(lensRadius * 1.45, lensRadius * 0.85, dist) * 0.45;
+        col *= (1.0 - shadow);
 
-        vec2 accentPos = rotate2d(baseNoise) * uv.xy * uZoom;
-        float accentPattern = lines(accentPos, 0.1);
+        // Inside the 3D optical sphere
+        if (dist < lensRadius) {
+          vec2 p = d / lensRadius;
+          float z = sqrt(max(0.0, 1.0 - dot(p, p)));
+          vec3 N = normalize(vec3(p.x, p.y, z * 1.35));
 
-        vec3 baseMix = mix(uBaseFirstColor, uBaseSecondColor, basePattern);
-        vec3 accentMix = mix(baseMix, uAccentColor, accentPattern - (1.0 - uAccentOpacity));
+          // Snell physical refraction with Chromatic Aberration (RGB split)
+          vec2 refractVec = N.xy * (1.0 - z * 0.5) * 0.095;
+          float r = getMonopoFluid(uv - refractVec * 0.92, t).r;
+          float g = getMonopoFluid(uv - refractVec * 1.00, t).g;
+          float b = getMonopoFluid(uv - refractVec * 1.08, t).b;
+          vec3 lensCol = vec3(r, g, b);
 
-        float finalMask = smoothstep(1.0, 1.0, pow(c, 6.0) * 10.0 + nc * (1.0 - progress));
-        vec4 finalImage = mix(vec4(finalMask), vec4(accentMix, 1.0), clamp((finalMask + progress), 0.0, 1.0)) * (1.0 - d);
+          // Fresnel glass edge reflection rim
+          float fresnel = pow(1.0 - z, 3.5);
+          vec3 rim = vec3(0.85, 0.75, 0.50) * fresnel * 0.45;
+          lensCol += rim;
 
-        gl_FragColor = vec4(vec3(finalImage), uOpacityBackground);
+          // Specular light glint
+          vec3 L = normalize(vec3(0.4, 0.6, 0.75));
+          float spec = pow(max(dot(N, L), 0.0), 28.0) * 0.55;
+          lensCol += vec3(spec);
+
+          // Smooth anti-aliased edge
+          float edgeAlpha = smoothstep(lensRadius, lensRadius - 0.007, dist);
+          col = mix(col, lensCol, edgeAlpha);
+        }
+
+        // 3. Cinematic Film Grain
+        vec2 uvRandom = uv;
+        uvRandom.y *= filmGrain(vec2(uvRandom.y, fract(u_time * 7.13)));
+        col += (filmGrain(uvRandom) - 0.5) * 0.055;
+
+        gl_FragColor = vec4(col, 1.0);
       }
     `;
 
-    this.bgMaterial = new THREE.ShaderMaterial({
-      uniforms: this.bgUniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      side: THREE.DoubleSide,
-      transparent: true,
-      defines: {
-        PI: Math.PI,
-        PR: (Math.min(window.devicePixelRatio || 1, 2)).toFixed(1)
+    const createShader = (type, source) => {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.warn('Shader compile error:', gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
       }
-    });
-
-    this.bgGeometry = new THREE.PlaneGeometry(1, 32, 32);
-    this.bgMesh = new THREE.Mesh(this.bgGeometry, this.bgMaterial);
-    this.bgMesh.scale.y = this.fovY;
-    this.bgMesh.scale.z = this.fovY;
-    this.bgMesh.scale.x = this.fovY * this.camera.aspect;
-    this.bgMesh.lookAt(this.camera.position);
-    this.scene.add(this.bgMesh);
-  }
-
-  initLens() {
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
-      format: THREE.RGBFormat,
-      generateMipmaps: true,
-      minFilter: THREE.LinearMipmapLinearFilter,
-      encoding: THREE.sRGBEncoding
-    });
-    this.refractSphereCamera = new THREE.CubeCamera(0.1, 10, this.cubeRenderTarget);
-
-    this.lensUniforms = {
-      mRefractionRatio: { type: 'f', value: 0.016 },
-      mFresnelBias: { type: 'f', value: 0.016 },
-      mFresnelPower: { type: 'f', value: 4.206 },
-      mFresnelScale: { type: 'f', value: 2.442 },
-      uSphereAlpha: { type: 'f', value: 1.0 },
-      uRefractionPower: { type: 'f', value: 0.75 },
-      tCube: { type: 't', value: this.cubeRenderTarget.texture }
+      return shader;
     };
 
-    const lensVertexShader = `
-      uniform float mRefractionRatio;
-      uniform float mFresnelBias;
-      uniform float mFresnelScale;
-      uniform float mFresnelPower;
+    const vs = createShader(gl.VERTEX_SHADER, vsSource);
+    const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+    if (!vs || !fs) return;
 
-      varying vec3 vReflect;
-      varying vec3 vRefract[3];
-      varying float vReflectionFactor;
+    this.program = gl.createProgram();
+    gl.attachShader(this.program, vs);
+    gl.attachShader(this.program, fs);
+    gl.linkProgram(this.program);
 
-      void main() {
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+      console.warn('Program link error:', gl.getProgramInfoLog(this.program));
+      return;
+    }
 
-        vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
+    gl.useProgram(this.program);
 
-        vec3 I = worldPosition.xyz - cameraPosition;
-
-        vReflect = reflect(I, worldNormal);
-        vRefract[0] = refract(normalize(I), worldNormal, mRefractionRatio);
-        vRefract[1] = refract(normalize(I), worldNormal, mRefractionRatio * 0.99);
-        vRefract[2] = refract(normalize(I), worldNormal, mRefractionRatio * 0.98);
-        vReflectionFactor = mFresnelBias + mFresnelScale * pow(1.0 + dot(normalize(I), worldNormal), mFresnelPower);
-
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `;
-
-    const lensFragmentShader = `
-      uniform samplerCube tCube;
-      uniform float uSphereAlpha;
-      uniform float uRefractionPower;
-
-      varying vec3 vReflect;
-      varying vec3 vRefract[3];
-      varying float vReflectionFactor;
-
-      void main() {
-        vec4 reflectedColor = textureCube(tCube, vec3(-vReflect.x, vReflect.yz));
-        vec4 refractedColor = vec4(1.0);
-
-        refractedColor.r = textureCube(tCube, vec3(-vRefract[0].x, vRefract[0].yz)).r;
-        refractedColor.g = textureCube(tCube, vec3(-vRefract[1].x, vRefract[1].yz)).g;
-        refractedColor.b = textureCube(tCube, vec3(-vRefract[2].x, vRefract[2].yz)).b;
-        refractedColor.a = uRefractionPower;
-
-        gl_FragColor = mix(vec4(vec3(refractedColor.rgb), refractedColor.a), reflectedColor * uSphereAlpha, clamp(vReflectionFactor, 0.0, 1.0));
-      }
-    `;
-
-    this.lensMaterial = new THREE.ShaderMaterial({
-      uniforms: this.lensUniforms,
-      vertexShader: lensVertexShader,
-      fragmentShader: lensFragmentShader,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-
-    this.sphereGeometry = new THREE.SphereGeometry(0.4, 64, 64);
-    this.sphere = new THREE.Mesh(this.sphereGeometry, this.lensMaterial);
-    this.sphere.scale.set(3.5, 3.5, 3.5);
-    this.sphere.position.set(-1.0, 0.75, -1.5);
-    this.scene.add(this.sphere);
-    this.refractSphereCamera.position.copy(this.sphere.position);
+    this.uResolution = gl.getUniformLocation(this.program, 'u_resolution');
+    this.uTime = gl.getUniformLocation(this.program, 'u_time');
+    this.uMouse = gl.getUniformLocation(this.program, 'u_mouse');
   }
 
-  initComposer() {
-    if (typeof THREE.EffectComposer !== 'undefined' && typeof THREE.RenderPass !== 'undefined' && typeof THREE.ShaderPass !== 'undefined') {
-      this.composer = new THREE.EffectComposer(this.renderer);
-      this.renderPass = new THREE.RenderPass(this.scene, this.camera);
-      this.composer.addPass(this.renderPass);
+  initBuffers() {
+    const gl = this.gl;
+    if (!gl || !this.program) return;
 
-      const grainShader = {
-        uniforms: {
-          tDiffuse: { value: null },
-          amount: { value: 0 }
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          uniform float amount;
-          uniform sampler2D tDiffuse;
-          varying vec2 vUv;
+    const vertices = new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+       1,  1
+    ]);
 
-          float random(vec2 p) {
-            vec2 K1 = vec2(
-              23.14069263277926,
-              2.665144142690225
-            );
-            return fract(cos(dot(p, K1)) * 12345.6789);
-          }
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
-          void main() {
-            vec4 color = texture2D(tDiffuse, vUv);
-            vec2 uvRandom = vUv;
-            uvRandom.y *= random(vec2(uvRandom.y, amount));
-            color.rgb += random(uvRandom) * 0.075;
-            gl_FragColor = vec4(color);
-          }
-        `
-      };
+    const aPos = gl.getAttribLocation(this.program, 'a_position');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  }
 
-      this.grainPass = new THREE.ShaderPass(grainShader);
-      this.grainPass.renderToScreen = true;
-      this.composer.addPass(this.grainPass);
-    }
+  initTracking() {
+    this.hasUserInteracted = false;
+    this.targetMouse = { x: 0.35, y: 0.50 };
+    this.currentMouse = { x: 0.35, y: 0.50 };
+    this.isVisible = false;
   }
 
   bindEvents() {
     const onMove = (clientX, clientY) => {
       const rect = this.section.getBoundingClientRect();
+      const mx = (clientX - rect.left) / rect.width;
+      const my = 1.0 - (clientY - rect.top) / rect.height;
+
       this.hasUserInteracted = true;
-      this.mouse.x = 2 * ((clientX - rect.left) / rect.width - 0.5);
-      this.mouse.y = 2 * ((clientY - rect.top) / rect.height - 0.5);
+      this.targetMouse = { x: mx, y: my };
     };
 
     window.addEventListener('mousemove', (e) => {
@@ -1006,81 +880,45 @@ class LiquidCrystal3D {
   }
 
   resize() {
-    if (!this.renderer || !this.camera || !this.section) return;
+    if (!this.gl || !this.canvas || !this.section) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = this.section.getBoundingClientRect();
-    const width = rect.width || window.innerWidth;
-    const height = rect.height || window.innerHeight;
+    const w = Math.floor((rect.width || window.innerWidth) * dpr);
+    const h = Math.floor((rect.height || window.innerHeight) * dpr);
 
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-
-    this.renderer.setSize(width, height);
-    if (this.composer) {
-      this.composer.setSize(width, height);
-    }
-
-    const t = this.camera.fov * Math.PI / 180;
-    this.fovY = Math.abs(this.camera.position.z * Math.tan(t / 2) * 2);
-
-    if (this.bgMesh) {
-      this.bgMesh.scale.x = Math.abs(this.fovY * this.camera.aspect);
-      this.bgMesh.scale.y = Math.abs(this.fovY);
-      this.bgMesh.scale.z = Math.abs(this.fovY);
-    }
-
-    if (this.bgUniforms && this.bgUniforms.u_res) {
-      this.bgUniforms.u_res.value.set(width, height);
-      this.bgUniforms.uZoom.value = window.innerWidth < 1024 ? 0.1 : 0.2;
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.gl.viewport(0, 0, w, h);
     }
   }
 
   loop() {
-    this.raf = requestAnimationFrame(() => this.loop());
+    requestAnimationFrame(() => this.loop());
 
-    if (!this.isVisible) return;
+    if (!this.isVisible || !this.gl || !this.program) return;
+
+    const gl = this.gl;
+    gl.useProgram(this.program);
 
     const now = performance.now() * 0.001;
 
-    // Gentle idle floating when user hasn't moved mouse yet
+    // Gentle idle floating when user has not hovered yet
     if (!this.hasUserInteracted) {
-      this.mouse.x = Math.sin(now * 0.4) * 0.35;
-      this.mouse.y = Math.cos(now * 0.3) * 0.25;
+      this.targetMouse.x = 0.35 + Math.sin(now * 0.45) * 0.12;
+      this.targetMouse.y = 0.50 + Math.cos(now * 0.35) * 0.08;
     }
 
     // Spring damping towards mouse position
-    this.mouseVec.x = this.mouse.x;
-    this.mouseVec.y = this.mouse.y;
-    this.direction.subVectors(this.mouseVec, this.cameraPosition);
-    this.direction.multiplyScalar(0.06);
-    this.cameraPosition.addVectors(this.cameraPosition, this.direction);
+    this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.055;
+    this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.055;
 
-    // Camera parallax tilting (exact monopo.vn formula)
-    this.camera.position.x = this.cameraPosition.x * this.cameraEasing.x * -1;
-    this.camera.position.y = -this.cameraPosition.y * this.cameraEasing.y * 1;
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
+    gl.uniform1f(this.uTime, now);
+    gl.uniform2f(this.uMouse, this.currentMouse.x, this.currentMouse.y);
 
-    // Update background procedural time
-    if (this.bgMaterial && this.bgMaterial.uniforms) {
-      this.bgMaterial.uniforms.uTime.value += 7e-5 * this.bgSpeed;
-    }
-
-    // Dynamic cubemap refraction pass for the glass sphere
-    if (this.sphere && this.refractSphereCamera) {
-      this.sphere.visible = false;
-      this.refractSphereCamera.update(this.renderer, this.scene);
-      this.sphere.visible = true;
-    }
-
-    // Render pass with cinematic film grain
-    if (this.composer) {
-      if (this.grainPass) {
-        this.grainPass.uniforms.amount.value = Math.random();
-      }
-      this.composer.render();
-    } else {
-      this.renderer.render(this.scene, this.camera);
-    }
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 }
 
