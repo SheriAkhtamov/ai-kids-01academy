@@ -372,45 +372,142 @@ function initActiveNavSpy() {
 }
 
 // ==========================================
-// Tilted Parallel Opposite Collage Scroll Animation
+// Tilted Parallel Opposite Collage Scroll Animation & Edge Fading
 // ==========================================
 function initCollageParallax() {
   const section = document.getElementById('works');
   if (!section) return;
 
-  const col1 = section.querySelector('.collage-col-1');
-  const col2 = section.querySelector('.collage-col-2');
-  const col3 = section.querySelector('.collage-col-3');
+  const viewport = section.querySelector('.collage-viewport');
+  if (!viewport) return;
+
+  const col1 = viewport.querySelector('.collage-col-1');
+  const col2 = viewport.querySelector('.collage-col-2');
+  const col3 = viewport.querySelector('.collage-col-3');
   if (!col1 || !col2) return;
 
-  let targetOffset = 0;
-  let currentOffset = 0;
+  const cards = viewport.querySelectorAll('.collage-card');
+
+  let offset1 = 0;
+  let offset2 = 0;
+  let offset3 = 0;
+
+  let loopHeight1 = 0;
+  let loopHeight2 = 0;
+  let loopHeight3 = 0;
+
+  function measureHeights() {
+    const getHalfHeight = (col) => {
+      if (!col) return 0;
+      const children = Array.from(col.children);
+      const half = Math.floor(children.length / 2);
+      if (half === 0) return col.scrollHeight / 2;
+      let h = 0;
+      for (let i = 0; i < half; i++) {
+        h += children[i].offsetHeight;
+      }
+      const gap = window.innerWidth >= 640 ? 24 : 16;
+      h += (half - 1) * gap;
+      return h > 0 ? h : col.scrollHeight / 2;
+    };
+
+    loopHeight1 = getHalfHeight(col1);
+    loopHeight2 = getHalfHeight(col2);
+    loopHeight3 = getHalfHeight(col3);
+  }
+
+  measureHeights();
+  window.addEventListener('resize', measureHeights, { passive: true });
+
+  // Scroll tracking with velocity and inertia
+  let lastScrollY = window.scrollY;
+  let scrollVelocity = 0;
+  let isHovered = false;
+
+  viewport.addEventListener('mouseenter', () => { isHovered = true; });
+  viewport.addEventListener('mouseleave', () => { isHovered = false; });
 
   const onScroll = () => {
-    const rect = section.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const totalDist = windowHeight + rect.height;
-    const currentDist = windowHeight - rect.top;
-    const progress = Math.max(-0.2, Math.min(1.2, currentDist / totalDist));
-
-    // Calculate opposite displacement
-    targetOffset = (progress - 0.5) * 180;
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+    lastScrollY = currentScrollY;
+    scrollVelocity += Math.max(-45, Math.min(45, delta * 0.85));
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  onScroll();
+
+  // Dynamic card edge fading (cards fade out and disappear at the edges)
+  function updateCardFading() {
+    const vRect = viewport.getBoundingClientRect();
+    const vH = vRect.height;
+    const fadeTop = vH * 0.24;
+    const fadeBottom = vH * 0.76;
+
+    cards.forEach((card) => {
+      const cRect = card.getBoundingClientRect();
+      const cardCenterY = (cRect.top + cRect.bottom) / 2 - vRect.top;
+
+      let opacity = 1;
+      if (cardCenterY < fadeTop) {
+        opacity = Math.max(0, cardCenterY / fadeTop);
+      } else if (cardCenterY > fadeBottom) {
+        opacity = Math.max(0, (vH - cardCenterY) / (vH - fadeBottom));
+      }
+
+      card.style.opacity = opacity.toFixed(3);
+    });
+  }
+
+  // IntersectionObserver: only run loop when section is in view
+  let isVisible = true;
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isVisible = entry.isIntersecting;
+      });
+    }, { rootMargin: '200px 0px' });
+    observer.observe(section);
+  }
 
   function loop() {
-    currentOffset += (targetOffset - currentOffset) * 0.12;
+    if (isVisible) {
+      if (!loopHeight1 || loopHeight1 < 100) {
+        measureHeights();
+      }
 
-    // Columns 1 and 3 move in one direction, Column 2 moves in the OPPOSITE direction!
-    if (col1) col1.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
-    if (col2) col2.style.transform = `translate3d(0, ${currentOffset * 1.3}px, 0)`;
-    if (col3) col3.style.transform = `translate3d(0, ${-currentOffset * 0.85}px, 0)`;
+      const baseSpeed = isHovered ? 0.2 : 0.75;
+      scrollVelocity *= 0.90;
+
+      // Column 1 moves UP
+      const speed1 = baseSpeed + scrollVelocity;
+      if (loopHeight1 > 0) {
+        offset1 = (offset1 + speed1) % loopHeight1;
+        if (offset1 < 0) offset1 += loopHeight1;
+        col1.style.transform = `translate3d(0, ${-offset1}px, 0)`;
+      }
+
+      // Column 2 moves DOWN (opposite!)
+      const speed2 = baseSpeed + scrollVelocity;
+      if (loopHeight2 > 0) {
+        offset2 = (offset2 + speed2) % loopHeight2;
+        if (offset2 < 0) offset2 += loopHeight2;
+        col2.style.transform = `translate3d(0, ${offset2 - loopHeight2}px, 0)`;
+      }
+
+      // Column 3 moves UP (sync with Column 1)
+      const speed3 = (baseSpeed * 0.9) + scrollVelocity;
+      if (col3 && loopHeight3 > 0) {
+        offset3 = (offset3 + speed3) % loopHeight3;
+        if (offset3 < 0) offset3 += loopHeight3;
+        col3.style.transform = `translate3d(0, ${-offset3}px, 0)`;
+      }
+
+      updateCardFading();
+    }
 
     requestAnimationFrame(loop);
   }
+
   requestAnimationFrame(loop);
 }
 
