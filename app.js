@@ -696,10 +696,10 @@ class LiquidCrystal3D {
         return smoothstep(0.0, 0.5 + b * 0.5, abs((sin(pos.x * 3.14159) + b * 2.0)) * 0.5);
       }
 
-      // Exact monopo.vn palette
-      const vec3 cBase1 = vec3(120.0 / 255.0, 158.0 / 255.0, 113.0 / 255.0); // sage olive green
-      const vec3 cBase2 = vec3(224.0 / 255.0, 148.0 / 255.0, 66.0 / 255.0);  // warm amber gold
-      const vec3 cDark  = vec3(0.008, 0.014, 0.025);                         // deep slate-950
+      // Brand Duolingo AI Kids palette (calm emerald & vibrant Duo-green)
+      const vec3 cBase1 = vec3(12.0 / 255.0, 120.0 / 255.0, 95.0 / 255.0);  // deep emerald-teal (#0c785f)
+      const vec3 cBase2 = vec3(88.0 / 255.0, 204.0 / 255.0, 45.0 / 255.0);  // vibrant Duo-green (#58cc2d)
+      const vec3 cDark  = vec3(0.008, 0.014, 0.025);                         // deep slate-950 (#020617)
 
       // Procedural fluid light beam (monopo.vn algorithm)
       vec3 getMonopoFluid(vec2 uv, float t, vec2 mouse) {
