@@ -696,10 +696,10 @@ class LiquidCrystal3D {
         return smoothstep(0.0, 0.5 + b * 0.5, abs((sin(pos.x * 3.14159) + b * 2.0)) * 0.5);
       }
 
-      // Brand Duolingo AI Kids palette (calm emerald & vibrant Duo-green, dimmed by 30%)
-      const vec3 cBase1 = vec3(8.4 / 255.0, 84.0 / 255.0, 66.5 / 255.0);   // deep emerald-teal (-30%)
-      const vec3 cBase2 = vec3(61.6 / 255.0, 142.8 / 255.0, 31.5 / 255.0); // Duo-green (-30%)
-      const vec3 cDark  = vec3(0.008, 0.014, 0.025);                         // deep slate-950 (#020617)
+      // Brand Duolingo AI Kids palette (calm emerald & vibrant Duo-green, dimmed by an additional 10%)
+      const vec3 cBase1 = vec3(7.56 / 255.0, 75.6 / 255.0, 59.85 / 255.0);   // deep emerald-teal
+      const vec3 cBase2 = vec3(55.44 / 255.0, 128.52 / 255.0, 28.35 / 255.0); // Duo-green
+      const vec3 cDark  = vec3(0.008, 0.014, 0.025);                          // deep slate-950 (#020617)
 
       // Procedural fluid light beam (monopo.vn algorithm)
       vec3 getMonopoFluid(vec2 uv, float t, vec2 mouse) {
@@ -738,7 +738,7 @@ class LiquidCrystal3D {
         // 2. Cinematic Film Grain
         vec2 uvRandom = uv;
         uvRandom.y *= filmGrain(vec2(uvRandom.y, fract(u_time * 7.13)));
-        col += (filmGrain(uvRandom) - 0.5) * 0.040;
+        col += (filmGrain(uvRandom) - 0.5) * 0.035;
 
         gl_FragColor = vec4(col, 1.0);
       }
