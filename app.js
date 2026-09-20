@@ -519,7 +519,7 @@ function initCollageVideos() {
 class LiquidCrystal3D {
   constructor() {
     this.canvas = document.getElementById('liquid-canvas');
-    this.section = document.getElementById('works');
+    this.section = document.getElementById('apply');
     if (!this.canvas || !this.section) return;
 
     this.gl = this.canvas.getContext('webgl', {

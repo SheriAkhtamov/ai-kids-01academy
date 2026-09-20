@@ -211,8 +211,8 @@
          4. CHILDREN'S PROJECTS (PARALLEL OPPOSITE COLLAGE)
          ========================================== -->
     <section id="works" class="py-16 sm:py-24 bg-slate-950 border-b border-slate-800/80 overflow-hidden relative">
-      <!-- Interactive 3D Liquid Crystal Wave Canvas -->
-      <canvas id="liquid-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+      <!-- Subtle Emerald Ambient Glow -->
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(88,204,2,0.12),transparent)]"></div>
 
       <div class="max-w-4xl mx-auto px-6 mb-8 text-center relative z-10">
         <!-- Header with Masked Scroll Text Reveal -->
@@ -399,21 +399,24 @@
     </section>
 
     <!-- ==========================================
-         5. APPLICATION FORM
+         5. APPLICATION FORM (LAST SCREEN WITH 3D LIQUID CRYSTAL)
          ========================================== -->
-    <section id="apply" class="py-20 sm:py-28 bg-gradient-to-b from-[#f0fdf4] via-[#ecfdf5] to-[#e6fcf0] border-b border-emerald-200/60 relative">
-      <div class="max-w-md mx-auto px-6 text-center">
+    <section id="apply" class="py-20 sm:py-28 bg-slate-950 border-b border-slate-800/80 relative overflow-hidden">
+      <!-- Interactive 3D Liquid Crystal Wave Canvas -->
+      <canvas id="liquid-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+      <div class="max-w-md mx-auto px-6 text-center relative z-10">
         
         <div class="reveal-fade header-reveal mb-8">
-          <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2 scroll-reveal-text">
+          <h2 class="text-3xl font-black text-white tracking-tight mb-2 scroll-reveal-text">
             <span class="scroll-inner">Записаться на урок</span>
           </h2>
-          <p class="text-slate-500 font-medium text-xs sm:text-sm">
-            Оставьте контакты — мы согласуем <span class="scroll-highlight">удобное время</span> в ближайшие выходные.
+          <p class="text-slate-400 font-medium text-xs sm:text-sm">
+            Оставьте контакты — мы согласуем <span class="text-emerald-400 font-bold">удобное время</span> в ближайшие выходные.
           </p>
         </div>
 
-        <form id="lead-form" class="mockup-frame scroll-block-reveal p-7 sm:p-9 text-left space-y-4 bg-white border-2 border-emerald-200/90 rounded-3xl shadow-xl">
+        <form id="lead-form" class="mockup-frame scroll-block-reveal p-7 sm:p-9 text-left space-y-4 bg-white/95 backdrop-blur-md border-2 border-emerald-500/30 rounded-3xl shadow-2xl">
           <div class="scroll-form-field">
             <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Имя</label>
             <input type="text" id="name" required placeholder="Ваше имя или имя ребёнка" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
