@@ -413,6 +413,14 @@ function initHeaderThemeController() {
   window.addEventListener('scroll', updateHeaderTheme, { passive: true });
   window.addEventListener('resize', updateHeaderTheme, { passive: true });
   updateHeaderTheme();
+
+  header.addEventListener('mousemove', (e) => {
+    const rect = header.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    header.style.setProperty('--header-mouse-x', `${x.toFixed(1)}%`);
+    header.style.setProperty('--header-mouse-y', `${y.toFixed(1)}%`);
+  }, { passive: true });
 }
 
 // ==========================================

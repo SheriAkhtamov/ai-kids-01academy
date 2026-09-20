@@ -32,19 +32,19 @@
   <div id="scroll-progress"></div>
 
   <!-- ==========================================
-       1. NAVIGATION BAR (Dynamic Inverted Contrast)
+       1. NAVIGATION BAR (Dynamic Inverted Liquid Crystal Floating Header)
        ========================================== -->
-  <header id="main-header" class="sticky top-0 z-40 backdrop-blur-md header-theme-dark">
-    <div class="max-w-6xl mx-auto px-6 h-18 py-3.5 flex items-center justify-between">
+  <header class="sticky top-2.5 sm:top-3.5 z-40 px-3 sm:px-6 pointer-events-none transition-all duration-300">
+    <div id="main-header" class="max-w-6xl mx-auto pointer-events-auto rounded-2xl sm:rounded-3xl backdrop-blur-xl px-5 sm:px-7 py-3 sm:py-3.5 flex items-center justify-between relative overflow-hidden header-theme-dark">
       
       <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-2.5 group">
+      <a href="#" class="flex items-center gap-2.5 group relative z-10">
         <img src="assets/logo_green.png" alt="01Academy" class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
         <span class="header-badge text-[11px] font-black uppercase px-2 py-0.5 rounded-md">Kids</span>
       </a>
 
       <!-- Minimal Nav Links with Active Scroll Tracking -->
-      <nav class="hidden md:flex items-center gap-6 text-sm font-bold">
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold relative z-10">
         <a href="#about" class="nav-link">О курсе</a>
         <a href="#works" class="nav-link">Работы детей</a>
         <a href="#faq" class="nav-link">Вопросы</a>
@@ -52,7 +52,7 @@
       </nav>
 
       <!-- CTA -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 relative z-10">
         <a href="#apply" class="btn-duo-primary text-xs sm:text-sm px-5 py-2.5">
           Пробный урок
         </a>
