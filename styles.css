@@ -605,8 +605,15 @@ body.scrolling-up .underline-animated::after {
 }
 
 .collage-stage {
-  transform: rotate(-3deg) scale(1.05);
+  transform: rotate(-1.5deg);
   transform-origin: center center;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .collage-stage {
+    transform: rotate(-2.5deg);
+  }
 }
 
 .collage-col {
