@@ -514,11 +514,319 @@ function initCollageVideos() {
 }
 
 // ==========================================
+// 3D Liquid Crystal Interactive Wave Surface (WebGL)
+// ==========================================
+class LiquidCrystal3D {
+  constructor() {
+    this.canvas = document.getElementById('liquid-canvas');
+    this.section = document.getElementById('works');
+    if (!this.canvas || !this.section) return;
+
+    this.gl = this.canvas.getContext('webgl', {
+      alpha: false,
+      antialias: false,
+      depth: false,
+      powerPreference: 'high-performance'
+    });
+    if (!this.gl) return;
+
+    this.initShaders();
+    this.initBuffers();
+    this.initRipples();
+    this.bindEvents();
+    this.resize();
+    this.animate();
+  }
+
+  initShaders() {
+    const gl = this.gl;
+    const vsSource = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = (a_position + 1.0) * 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fsSource = `
+      precision highp float;
+      varying vec2 v_uv;
+
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform vec2 u_mouse;
+      uniform float u_mouse_speed;
+      uniform vec4 u_ripples[6];
+
+      float wave(vec2 p, float t) {
+        float h = 0.0;
+        
+        // Ambient organic fluid swells
+        vec2 p1 = p * 2.2 + vec2(t * 0.12, t * 0.08);
+        vec2 p2 = p * 3.4 - vec2(t * 0.10, t * 0.16);
+        h += sin(p1.x + sin(p1.y * 1.3)) * 0.28;
+        h += cos(p2.y + sin(p2.x * 1.4)) * 0.22;
+
+        // Domain warping for fluid viscosity
+        vec2 warp = vec2(sin(p.x * 2.5 + t * 0.2), cos(p.y * 2.5 + t * 0.22));
+        h += sin(length(p + warp * 0.35) * 3.8 - t * 0.45) * 0.20;
+
+        // Interactive mouse ripples
+        for (int i = 0; i < 6; i++) {
+          vec4 rip = u_ripples[i];
+          if (rip.w > 0.001) {
+            float age = t - rip.z;
+            if (age > 0.0 && age < 3.0) {
+              float d = length(p - rip.xy);
+              float waveFront = abs(d - age * 0.65);
+              float amp = rip.w * exp(-d * 2.5) * exp(-age * 1.2);
+              h += sin(waveFront * 24.0) * amp * 0.45;
+            }
+          }
+        }
+
+        // Active cursor displacement
+        float cursorDist = length(p - u_mouse);
+        float cursorWave = sin(cursorDist * 16.0 - t * 3.5) * exp(-cursorDist * 4.0) * u_mouse_speed;
+        h += cursorWave * 0.35;
+
+        return h;
+      }
+
+      void main() {
+        vec2 uv = v_uv;
+        vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
+        vec2 p = (uv - 0.5) * aspect;
+
+        float t = u_time * 0.8;
+        float eps = 0.004;
+
+        // Calculate 3D surface normal
+        float hCenter = wave(p, t);
+        float hRight  = wave(p + vec2(eps, 0.0), t);
+        float hTop    = wave(p + vec2(0.0, eps), t);
+
+        vec3 N = normalize(vec3(
+          (hCenter - hRight) * 4.5,
+          (hCenter - hTop) * 4.5,
+          eps * 2.5
+        ));
+
+        vec3 V = vec3(0.0, 0.0, 1.0);
+        float NdotV = clamp(dot(N, V), 0.0, 1.0);
+        float fresnel = pow(1.0 - NdotV, 3.2);
+
+        // Lights
+        vec3 L1 = normalize(vec3(0.6, 0.7, 0.8));
+        vec3 H1 = normalize(L1 + V);
+        float diff1 = max(dot(N, L1), 0.0);
+        float spec1 = pow(max(dot(N, H1), 0.0), 40.0);
+
+        vec2 mouseP = (u_mouse - 0.5) * aspect;
+        vec3 L2 = normalize(vec3(mouseP - p, 0.4));
+        vec3 H2 = normalize(L2 + V);
+        float mouseDist = length(mouseP - p);
+        float spec2 = pow(max(dot(N, H2), 0.0), 32.0) * exp(-mouseDist * 2.0);
+
+        // Liquid Crystal Palette (Obsidian -> Deep Teal -> 01Academy Green -> Iridescent Violet)
+        vec3 cBase    = vec3(0.025, 0.045, 0.08);   // Deep obsidian
+        vec3 cEmerald = vec3(0.345, 0.800, 0.008);  // #58cc02 01Academy Green
+        vec3 cTeal    = vec3(0.020, 0.750, 0.650);  // Deep Cyan/Teal
+        vec3 cViolet  = vec3(0.550, 0.200, 0.850);  // Glancing angle violet
+
+        float colorShift = clamp(hCenter * 0.8 + fresnel * 0.7 + diff1 * 0.3, 0.0, 1.0);
+        
+        vec3 liquidColor = mix(cBase, cTeal, smoothstep(0.1, 0.5, colorShift));
+        liquidColor = mix(liquidColor, cEmerald, smoothstep(0.4, 0.85, colorShift));
+        liquidColor = mix(liquidColor, cViolet, fresnel * 0.65);
+
+        vec3 specColor = mix(vec3(1.0), cEmerald, 0.4);
+        vec3 finalColor = liquidColor + specColor * (spec1 * 0.7 + spec2 * 0.9);
+
+        float vignette = smoothstep(1.3, 0.3, length(uv - 0.5));
+        finalColor *= vignette;
+
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    const createShader = (type, source) => {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.warn(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    };
+
+    const vs = createShader(gl.VERTEX_SHADER, vsSource);
+    const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+    if (!vs || !fs) return;
+
+    this.program = gl.createProgram();
+    gl.attachShader(this.program, vs);
+    gl.attachShader(this.program, fs);
+    gl.linkProgram(this.program);
+
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+      console.warn(gl.getProgramInfoLog(this.program));
+      return;
+    }
+
+    gl.useProgram(this.program);
+
+    this.uResolution = gl.getUniformLocation(this.program, 'u_resolution');
+    this.uTime = gl.getUniformLocation(this.program, 'u_time');
+    this.uMouse = gl.getUniformLocation(this.program, 'u_mouse');
+    this.uMouseSpeed = gl.getUniformLocation(this.program, 'u_mouse_speed');
+    this.uRipples = gl.getUniformLocation(this.program, 'u_ripples');
+  }
+
+  initBuffers() {
+    const gl = this.gl;
+    const vertices = new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+       1,  1
+    ]);
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+    const aPos = gl.getAttribLocation(this.program, 'a_position');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  }
+
+  initRipples() {
+    this.ripples = [];
+    for (let i = 0; i < 6; i++) {
+      this.ripples.push({ x: 0, y: 0, time: -100, strength: 0 });
+    }
+    this.rippleIndex = 0;
+    this.lastRippleTime = 0;
+    this.lastX = 0.5;
+    this.lastY = 0.5;
+    this.targetMouse = { x: 0.5, y: 0.5 };
+    this.currentMouse = { x: 0.5, y: 0.5 };
+    this.targetSpeed = 0;
+    this.currentSpeed = 0;
+  }
+
+  bindEvents() {
+    const onMove = (clientX, clientY) => {
+      const rect = this.section.getBoundingClientRect();
+      const mx = (clientX - rect.left) / rect.width;
+      const my = 1.0 - (clientY - rect.top) / rect.height;
+
+      const dist = Math.hypot(mx - this.lastX, my - this.lastY);
+      const now = performance.now() * 0.001;
+
+      if (dist > 0.025 && now - this.lastRippleTime > 0.07) {
+        this.ripples[this.rippleIndex] = {
+          x: mx,
+          y: my,
+          time: now,
+          strength: Math.min(1.2, dist * 10.0)
+        };
+        this.rippleIndex = (this.rippleIndex + 1) % 6;
+        this.lastRippleTime = now;
+      }
+
+      this.targetMouse = { x: mx, y: my };
+      this.targetSpeed = Math.min(1.8, dist * 12.0);
+      this.lastX = mx;
+      this.lastY = my;
+    };
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = this.section.getBoundingClientRect();
+      if (e.clientY >= rect.top - 100 && e.clientY <= rect.bottom + 100) {
+        onMove(e.clientX, e.clientY);
+      }
+    }, { passive: true });
+
+    this.section.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => this.resize(), { passive: true });
+
+    this.isVisible = false;
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          this.isVisible = entry.isIntersecting;
+        });
+      }, { rootMargin: '150px' });
+      observer.observe(this.section);
+    } else {
+      this.isVisible = true;
+    }
+  }
+
+  resize() {
+    if (!this.gl || !this.canvas || !this.section) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    const rect = this.section.getBoundingClientRect();
+    const w = Math.floor(rect.width * dpr);
+    const h = Math.floor(rect.height * dpr);
+
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.gl.viewport(0, 0, w, h);
+    }
+  }
+
+  animate() {
+    if (this.isVisible && this.gl && this.program) {
+      const gl = this.gl;
+      gl.useProgram(this.program);
+
+      this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.12;
+      this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.12;
+      this.currentSpeed += (this.targetSpeed - this.currentSpeed) * 0.1;
+      this.targetSpeed *= 0.94;
+
+      const now = performance.now() * 0.001;
+
+      gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
+      gl.uniform1f(this.uTime, now);
+      gl.uniform2f(this.uMouse, this.currentMouse.x, this.currentMouse.y);
+      gl.uniform1f(this.uMouseSpeed, this.currentSpeed);
+
+      const flatRipples = new Float32Array(24);
+      for (let i = 0; i < 6; i++) {
+        flatRipples[i * 4 + 0] = this.ripples[i].x;
+        flatRipples[i * 4 + 1] = this.ripples[i].y;
+        flatRipples[i * 4 + 2] = this.ripples[i].time;
+        flatRipples[i * 4 + 3] = this.ripples[i].strength;
+      }
+      gl.uniform4fv(this.uRipples, flatRipples);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
+// ==========================================
 // App Initializer
 // ==========================================
 function initApp() {
   new AlligatorTracker();
   new WaveCharacterTracker();
+  new LiquidCrystal3D();
   initTextRotator();
   initScrollProgressBar();
   initScrollAnimations();
