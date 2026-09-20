@@ -879,6 +879,22 @@ class LiquidCrystal3D {
 }
 
 // ==========================================
+// FAQ Accordion Interaction (Click / Touch fallback)
+// ==========================================
+function initFaqAccordion() {
+  const faqItems = document.querySelectorAll('.faq-item');
+  if (!faqItems.length) return;
+
+  faqItems.forEach((item) => {
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      const isOpen = item.classList.contains('is-open');
+      item.classList.toggle('is-open', !isOpen);
+    });
+  });
+}
+
+// ==========================================
 // App Initializer
 // ==========================================
 function initApp() {
@@ -892,6 +908,7 @@ function initApp() {
   initHeaderThemeController();
   initCollageParallax();
   initCollageVideos();
+  initFaqAccordion();
 
   const form = document.getElementById('lead-form');
   const formMsg = document.getElementById('form-msg');

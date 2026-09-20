@@ -289,19 +289,54 @@ body.scrolling-up .underline-animated::after {
   opacity: 0;
 }
 
-/* 8. FAQ Interactive Card */
+/* 8. FAQ Interactive Card & Hover/Click Reveal Animation */
 .faq-item {
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+  user-select: none;
 }
 
-.faq-item:hover {
+.faq-item:hover,
+.faq-item.is-open {
   transform: translateY(-2px);
-  border-color: #cbd5e1;
-  box-shadow: 0 6px 20px -5px rgba(15, 23, 42, 0.06);
+  border-color: #86efac;
+  box-shadow: 0 12px 28px -6px rgba(88, 204, 2, 0.14), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
-.faq-item:hover h4 {
+.faq-item:hover h4,
+.faq-item.is-open h4 {
   color: #15803d;
+}
+
+.faq-item:hover .faq-chevron,
+.faq-item.is-open .faq-chevron {
+  transform: rotate(180deg);
+}
+
+.faq-item:hover .faq-icon-pill,
+.faq-item.is-open .faq-icon-pill {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.faq-answer-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-answer-content {
+  overflow: hidden;
+}
+
+.faq-item:hover .faq-answer-wrapper,
+.faq-item.is-open .faq-answer-wrapper {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ==========================================
