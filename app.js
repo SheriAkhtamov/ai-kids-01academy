@@ -9,14 +9,13 @@ function selectCourse(courseName) {
 }
 
 // ==========================================
-// Site Preloader (Duolingo Style)
+// Site Preloader (Clean Minimalist)
 // ==========================================
 class SitePreloader {
   constructor() {
     this.overlay = document.getElementById('site-preloader');
     this.bar = document.getElementById('preloader-bar');
     this.percentEl = document.getElementById('preloader-percent');
-    this.statusEl = document.getElementById('preloader-status');
 
     if (!this.overlay) return;
 
@@ -29,24 +28,16 @@ class SitePreloader {
     this.isDone = false;
     this.isDismissed = false;
 
-    this.statusPhrases = [
-      { threshold: 0, text: 'Пробуждаем крокодила...' },
-      { threshold: 25, text: 'Заряжаем нейросети...' },
-      { threshold: 50, text: 'Настраиваем интерактив...' },
-      { threshold: 75, text: 'Оживляем анимации...' },
-      { threshold: 95, text: 'Почти готово к запуску!' }
-    ];
-
     if (document.readyState === 'complete') {
       this.onAssetLoaded();
     } else {
       window.addEventListener('load', () => this.onAssetLoaded(), { once: true });
     }
 
-    // Fallback safety timeout: ensures preloader never hangs indefinitely on slow networks
+    // Safety fallback timeout: ensures preloader never hangs indefinitely on slow networks
     this.safetyTimeout = setTimeout(() => {
       this.forceFinish();
-    }, 8000);
+    }, 7000);
 
     this.animate();
   }
@@ -62,23 +53,11 @@ class SitePreloader {
     }
   }
 
-  updateStatus(percent) {
-    if (!this.statusEl) return;
-    for (let i = this.statusPhrases.length - 1; i >= 0; i--) {
-      if (percent >= this.statusPhrases[i].threshold) {
-        if (this.statusEl.textContent !== this.statusPhrases[i].text) {
-          this.statusEl.textContent = this.statusPhrases[i].text;
-        }
-        break;
-      }
-    }
-  }
-
   animate() {
     if (this.isDismissed) return;
 
     // Smooth interpolation
-    const step = (this.targetPercent - this.currentPercent) * 0.16;
+    const step = (this.targetPercent - this.currentPercent) * 0.18;
     this.currentPercent += Math.max(0.2, step);
 
     if (this.currentPercent > this.targetPercent && !this.isDone) {
@@ -88,12 +67,11 @@ class SitePreloader {
     const displayPercent = Math.min(100, Math.round(this.currentPercent));
 
     if (this.bar) {
-      this.bar.style.width = `${Math.max(6, displayPercent)}%`;
+      this.bar.style.width = `${Math.max(5, displayPercent)}%`;
     }
     if (this.percentEl) {
       this.percentEl.textContent = `${displayPercent}%`;
     }
-    this.updateStatus(displayPercent);
 
     if (this.isDone && displayPercent >= 99.5) {
       this.dismiss();
@@ -121,7 +99,6 @@ class SitePreloader {
 
     if (this.bar) this.bar.style.width = '100%';
     if (this.percentEl) this.percentEl.textContent = '100%';
-    if (this.statusEl) this.statusEl.textContent = 'Вперёд к знаниям! 🚀';
 
     setTimeout(() => {
       if (this.overlay) {
@@ -136,8 +113,8 @@ class SitePreloader {
         if (this.overlay) {
           this.overlay.style.display = 'none';
         }
-      }, 550);
-    }, 300);
+      }, 450);
+    }, 150);
   }
 }
 
