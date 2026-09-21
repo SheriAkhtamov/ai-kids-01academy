@@ -376,17 +376,7 @@ function initTextRotator() {
   }, 2800);
 }
 
-function initScrollProgressBar() {
-  const progressBar = document.getElementById('scroll-progress');
-  if (!progressBar) return;
 
-  window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-  }, { passive: true });
-}
 
 function initScrollDirectionTracker() {
   // Handled inside initScrollAnimations for zero-latency synchronization
@@ -1041,7 +1031,6 @@ function initApp() {
   new WaveCharacterTracker();
   new LiquidCrystal3D();
   initTextRotator();
-  initScrollProgressBar();
   initScrollAnimations();
   initActiveNavSpy();
   initHeaderThemeController();

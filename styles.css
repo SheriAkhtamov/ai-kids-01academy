@@ -343,19 +343,7 @@ body.scrolling-up .underline-animated::after {
    SCROLL-TRIGGERED TEXT ANIMATIONS
    ========================================== */
 
-/* 9. Scroll Reading Progress Bar */
-#scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3.5px;
-  background: linear-gradient(90deg, #58cc02, #10b981, #22c55e);
-  z-index: 999;
-  width: 0%;
-  transition: width 0.08s ease-out;
-  border-radius: 0 3px 3px 0;
-  box-shadow: 0 1px 8px rgba(88, 204, 2, 0.45);
-}
+
 
 /* 10. Scroll Highlighter: draws across key words as you scroll to them (Bidirectional) */
 .scroll-highlight {
