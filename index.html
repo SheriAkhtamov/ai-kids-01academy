@@ -26,7 +26,82 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="bg-white text-slate-900 antialiased selection:bg-[#e8fcd9] selection:text-[#1e7000]">
+<body class="bg-white text-slate-900 antialiased selection:bg-[#e8fcd9] selection:text-[#1e7000] preloader-active">
+
+  <!-- ==========================================
+       SITE PRELOADER (Duolingo Style)
+       ========================================== -->
+  <div id="site-preloader" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white select-none transition-all duration-500">
+    <div class="preloader-content flex flex-col items-center max-w-sm w-full px-6 text-center">
+      
+      <!-- Brand & Mascot Graphic -->
+      <div class="relative mb-6 flex flex-col items-center">
+        <!-- Mascot Animation Container -->
+        <div class="preloader-mascot relative w-28 h-28 sm:w-32 sm:h-32 mb-3">
+          <div class="mascot-bounce w-full h-full flex items-center justify-center">
+            <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Shadow -->
+              <ellipse cx="60" cy="110" rx="35" ry="7" fill="#e2e8f0" class="mascot-shadow" />
+              <!-- Body -->
+              <rect x="30" y="38" width="60" height="62" rx="30" fill="#58cc02" />
+              <path d="M30 68 C30 85 43 100 60 100 C77 100 90 85 90 68 Z" fill="#46a302" opacity="0.25" />
+              <!-- Belly -->
+              <ellipse cx="60" cy="74" rx="20" ry="22" fill="#8cee1e" />
+              <!-- Snout / Cheeks -->
+              <ellipse cx="60" cy="54" rx="32" ry="18" fill="#58cc02" />
+              <ellipse cx="60" cy="56" rx="28" ry="14" fill="#61e002" />
+              <!-- Snout ridges / smile & teeth -->
+              <path d="M48 64 Q60 70 72 64" stroke="#2b6601" stroke-width="3" stroke-linecap="round" fill="none" />
+              <polygon points="54,64 56,60 58,64" fill="#ffffff" />
+              <polygon points="62,64 64,60 66,64" fill="#ffffff" />
+              <!-- Nostrils -->
+              <ellipse cx="53" cy="51" rx="2.5" ry="3.5" fill="#2b6601" />
+              <ellipse cx="67" cy="51" rx="2.5" ry="3.5" fill="#2b6601" />
+              <!-- Eyes (Animated) -->
+              <g class="mascot-eyes">
+                <!-- Left Eye -->
+                <circle cx="44" cy="34" r="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                <circle class="mascot-pupil mascot-pupil-left" cx="44" cy="34" r="6.5" fill="#0f172a" />
+                <circle cx="42" cy="31" r="2.5" fill="#ffffff" />
+                <!-- Right Eye -->
+                <circle cx="76" cy="34" r="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                <circle class="mascot-pupil mascot-pupil-right" cx="76" cy="34" r="6.5" fill="#0f172a" />
+                <circle cx="74" cy="31" r="2.5" fill="#ffffff" />
+              </g>
+              <!-- AI Sparkle Antenna -->
+              <g class="mascot-sparkle">
+                <path d="M60 20 L60 28" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+                <polygon points="60,11 63,18 70,20 63,22 60,29 57,22 50,20 57,18" fill="#fbbf24" />
+                <circle cx="60" cy="20" r="2" fill="#ffffff" />
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <img src="assets/logo_green.png" alt="01Academy" class="h-6 w-auto object-contain" />
+          <span class="header-badge text-[10px] font-black uppercase px-2 py-0.5 rounded-md">Kids AI</span>
+        </div>
+      </div>
+
+      <!-- Duolingo Chunky 3D Progress Bar -->
+      <div class="w-full bg-slate-100 rounded-full h-5 p-1 border-2 border-slate-200 shadow-inner relative overflow-hidden mb-3">
+        <div id="preloader-bar" class="h-full bg-[#58cc02] rounded-full transition-[width] duration-150 ease-out relative overflow-hidden" style="width: 5%; box-shadow: inset 0 -3px 0 #46a302, 0 1px 2px rgba(88,204,2,0.4);">
+          <!-- Glossy highlight line -->
+          <div class="absolute top-0.5 left-2 right-2 h-1 bg-white/40 rounded-full"></div>
+          <!-- Shimmer effect -->
+          <div class="preloader-shimmer"></div>
+        </div>
+      </div>
+
+      <!-- Percentage & Status Info -->
+      <div class="w-full flex items-center justify-between text-xs font-bold text-slate-400 mb-2">
+        <span id="preloader-status" class="text-slate-600 font-extrabold transition-opacity duration-300">Пробуждаем крокодила...</span>
+        <span id="preloader-percent" class="text-[#58cc02] font-black text-sm">0%</span>
+      </div>
+
+      <p class="text-[11px] text-slate-400 font-medium">Готовим интерактивный мир искусственного интеллекта...</p>
+    </div>
+  </div>
 
   <!-- Scroll Reading Progress Bar -->
   <div id="scroll-progress"></div>
@@ -252,32 +327,32 @@
           <div class="collage-col collage-col-1 space-y-4 sm:space-y-6">
             <!-- Card 1 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-01.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-01.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 2 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-02.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-02.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 3 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-03.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-03.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 4 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-04.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-04.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Duplicates for seamless infinite loop -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-01.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-01.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-02.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-02.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-03.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-03.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-04.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-04.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
           </div>
 
@@ -285,32 +360,32 @@
           <div class="collage-col collage-col-2 space-y-4 sm:space-y-6">
             <!-- Card 5 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-05.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-05.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 6 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-06.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-06.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 7 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-07.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-07.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 8 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-08.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-08.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Duplicates for seamless infinite loop -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-05.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-05.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-06.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-06.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-07.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-07.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-08.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-08.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
           </div>
 
@@ -318,32 +393,32 @@
           <div class="collage-col collage-col-3 space-y-4 sm:space-y-6 hidden md:block">
             <!-- Card 9 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-09.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-09.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 10 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-10.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-10.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 11 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-11.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-11.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Card 12 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-12.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-12.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <!-- Duplicates for seamless infinite loop -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-09.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-09.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-10.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-10.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-11.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-11.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
-              <video src="assets/works/work-12.mp4" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover"></video>
+              <video src="assets/works/work-12.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
             </div>
           </div>
 

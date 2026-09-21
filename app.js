@@ -9,6 +9,142 @@ function selectCourse(courseName) {
 }
 
 // ==========================================
+// Site Preloader (Duolingo Style)
+// ==========================================
+class SitePreloader {
+  constructor() {
+    this.overlay = document.getElementById('site-preloader');
+    this.bar = document.getElementById('preloader-bar');
+    this.percentEl = document.getElementById('preloader-percent');
+    this.statusEl = document.getElementById('preloader-status');
+
+    if (!this.overlay) return;
+
+    document.body.classList.add('preloader-active');
+
+    this.totalAssets = 194; // 1 (window load) + 73 (gaze frames) + 120 (wave frames)
+    this.loadedAssets = 0;
+    this.targetPercent = 6;
+    this.currentPercent = 6;
+    this.isDone = false;
+    this.isDismissed = false;
+
+    this.statusPhrases = [
+      { threshold: 0, text: 'Пробуждаем крокодила...' },
+      { threshold: 25, text: 'Заряжаем нейросети...' },
+      { threshold: 50, text: 'Настраиваем интерактив...' },
+      { threshold: 75, text: 'Оживляем анимации...' },
+      { threshold: 95, text: 'Почти готово к запуску!' }
+    ];
+
+    if (document.readyState === 'complete') {
+      this.onAssetLoaded();
+    } else {
+      window.addEventListener('load', () => this.onAssetLoaded(), { once: true });
+    }
+
+    // Fallback safety timeout: ensures preloader never hangs indefinitely on slow networks
+    this.safetyTimeout = setTimeout(() => {
+      this.forceFinish();
+    }, 8000);
+
+    this.animate();
+  }
+
+  onAssetLoaded() {
+    if (this.isDismissed) return;
+    this.loadedAssets++;
+    const rawPercent = Math.min(100, Math.round((this.loadedAssets / this.totalAssets) * 100));
+    this.targetPercent = Math.max(this.targetPercent, rawPercent);
+
+    if (this.loadedAssets >= this.totalAssets) {
+      this.finish();
+    }
+  }
+
+  updateStatus(percent) {
+    if (!this.statusEl) return;
+    for (let i = this.statusPhrases.length - 1; i >= 0; i--) {
+      if (percent >= this.statusPhrases[i].threshold) {
+        if (this.statusEl.textContent !== this.statusPhrases[i].text) {
+          this.statusEl.textContent = this.statusPhrases[i].text;
+        }
+        break;
+      }
+    }
+  }
+
+  animate() {
+    if (this.isDismissed) return;
+
+    // Smooth interpolation
+    const step = (this.targetPercent - this.currentPercent) * 0.16;
+    this.currentPercent += Math.max(0.2, step);
+
+    if (this.currentPercent > this.targetPercent && !this.isDone) {
+      this.currentPercent = this.targetPercent;
+    }
+
+    const displayPercent = Math.min(100, Math.round(this.currentPercent));
+
+    if (this.bar) {
+      this.bar.style.width = `${Math.max(6, displayPercent)}%`;
+    }
+    if (this.percentEl) {
+      this.percentEl.textContent = `${displayPercent}%`;
+    }
+    this.updateStatus(displayPercent);
+
+    if (this.isDone && displayPercent >= 99.5) {
+      this.dismiss();
+      return;
+    }
+
+    requestAnimationFrame(() => this.animate());
+  }
+
+  forceFinish() {
+    this.targetPercent = 100;
+    this.finish();
+  }
+
+  finish() {
+    if (this.isDone) return;
+    this.isDone = true;
+    clearTimeout(this.safetyTimeout);
+    this.targetPercent = 100;
+  }
+
+  dismiss() {
+    if (this.isDismissed) return;
+    this.isDismissed = true;
+
+    if (this.bar) this.bar.style.width = '100%';
+    if (this.percentEl) this.percentEl.textContent = '100%';
+    if (this.statusEl) this.statusEl.textContent = 'Вперёд к знаниям! 🚀';
+
+    setTimeout(() => {
+      if (this.overlay) {
+        this.overlay.classList.add('preloader-hidden');
+      }
+      document.body.classList.remove('preloader-active');
+
+      window.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event('resize'));
+
+      setTimeout(() => {
+        if (this.overlay) {
+          this.overlay.style.display = 'none';
+        }
+      }, 550);
+    }, 300);
+  }
+}
+
+// Global preloader instance
+window.SitePreloaderInstance = new SitePreloader();
+
+// ==========================================
 // Alligator Gaze Tracker
 // ==========================================
 class AlligatorTracker {
@@ -31,27 +167,29 @@ class AlligatorTracker {
   }
 
   preloadFrames() {
-    // Center frame
-    this.centerFrame = new Image();
-    this.centerFrame.src = 'assets/gaze_frames/gaze_center.png';
-    this.centerFrame.onload = () => {
+    const notifyLoad = () => {
       this.loadedCount++;
+      if (window.SitePreloaderInstance) {
+        window.SitePreloaderInstance.onAssetLoaded();
+      }
       if (this.loadedCount >= this.totalFrames + 1) {
         this.onReady();
       }
     };
+
+    // Center frame
+    this.centerFrame = new Image();
+    this.centerFrame.src = 'assets/gaze_frames/gaze_center.png';
+    this.centerFrame.onload = notifyLoad;
+    this.centerFrame.onerror = notifyLoad;
 
     // 72 circular frames
     for (let i = 0; i < this.totalFrames; i++) {
       const img = new Image();
       const padIndex = String(i).padStart(2, '0');
       img.src = `assets/gaze_frames/gaze_${padIndex}.png`;
-      img.onload = () => {
-        this.loadedCount++;
-        if (this.loadedCount >= this.totalFrames + 1) {
-          this.onReady();
-        }
-      };
+      img.onload = notifyLoad;
+      img.onerror = notifyLoad;
       this.frames.push(img);
     }
   }
@@ -164,17 +302,23 @@ class WaveCharacterTracker {
   }
 
   preloadFrames() {
+    const notifyLoad = () => {
+      this.loadedCount++;
+      if (window.SitePreloaderInstance) {
+        window.SitePreloaderInstance.onAssetLoaded();
+      }
+      if (this.loadedCount >= this.totalFrames) {
+        this.isLoaded = true;
+        this.drawFrame(0);
+      }
+    };
+
     for (let i = 0; i < this.totalFrames; i++) {
       const img = new Image();
       const padIndex = String(i).padStart(3, '0');
       img.src = `assets/wave_frames/wave_${padIndex}.png`;
-      img.onload = () => {
-        this.loadedCount++;
-        if (this.loadedCount >= this.totalFrames) {
-          this.isLoaded = true;
-          this.drawFrame(0);
-        }
-      };
+      img.onload = notifyLoad;
+      img.onerror = notifyLoad;
       this.frames.push(img);
     }
   }
@@ -541,27 +685,39 @@ function initCollageParallax() {
 
 function initCollageVideos() {
   const videos = document.querySelectorAll('.collage-card video');
+  if (!videos.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target;
+      if (entry.isIntersecting) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            const resume = () => {
+              video.play().catch(() => {});
+              window.removeEventListener('scroll', resume);
+              window.removeEventListener('touchstart', resume);
+              window.removeEventListener('click', resume);
+            };
+            window.addEventListener('scroll', resume, { once: true, passive: true });
+            window.addEventListener('touchstart', resume, { once: true, passive: true });
+            window.addEventListener('click', resume, { once: true });
+          });
+        }
+      } else {
+        video.pause();
+      }
+    });
+  }, { rootMargin: '300px 0px', threshold: 0.05 });
+
   videos.forEach((video) => {
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('muted', '');
-
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        const resume = () => {
-          video.play();
-          window.removeEventListener('scroll', resume);
-          window.removeEventListener('touchstart', resume);
-          window.removeEventListener('click', resume);
-        };
-        window.addEventListener('scroll', resume, { once: true, passive: true });
-        window.addEventListener('touchstart', resume, { once: true, passive: true });
-        window.addEventListener('click', resume, { once: true });
-      });
-    }
+    observer.observe(video);
   });
 }
 

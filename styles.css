@@ -796,3 +796,114 @@ body.scrolling-up .underline-animated::after {
   border: 1px solid #6ee7b7;
 }
 
+/* ==========================================
+   SITE PRELOADER (Duolingo Style)
+   ========================================== */
+body.preloader-active {
+  overflow: hidden !important;
+}
+
+#site-preloader {
+  background-color: #ffffff;
+  background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+}
+
+#site-preloader.preloader-hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(1.02);
+}
+
+.preloader-mascot .mascot-bounce {
+  animation: mascotBounce 2s ease-in-out infinite;
+}
+
+.preloader-mascot .mascot-shadow {
+  transform-origin: 60px 110px;
+  animation: mascotShadow 2s ease-in-out infinite;
+}
+
+.preloader-mascot .mascot-pupil {
+  transform-origin: center;
+  animation: pupilWiggle 3s ease-in-out infinite;
+}
+
+.preloader-mascot .mascot-sparkle {
+  transform-origin: 60px 20px;
+  animation: sparkleGlow 1.8s ease-in-out infinite;
+}
+
+.preloader-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: shimmerPass 1.5s infinite;
+}
+
+@keyframes mascotBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes mascotShadow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(0.85);
+    opacity: 0.35;
+  }
+}
+
+@keyframes pupilWiggle {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  45% {
+    transform: translate(2px, -1px);
+  }
+  70% {
+    transform: translate(1px, 2px);
+  }
+}
+
+@keyframes sparkleGlow {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.6));
+  }
+  50% {
+    transform: scale(1.15) rotate(12deg);
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 1));
+  }
+}
+
+@keyframes shimmerPass {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+
