@@ -797,15 +797,37 @@ body.scrolling-up .underline-animated::after {
 }
 
 /* ==========================================
-   SITE PRELOADER (Clean Minimalist)
+   SITE PRELOADER (Navbar Liquid Crystal Dark Theme)
    ========================================== */
 body.preloader-active {
   overflow: hidden !important;
 }
 
 #site-preloader {
-  background-color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    rgba(2, 6, 23, 1) 0%,
+    rgba(5, 20, 24, 1) 40%,
+    rgba(15, 23, 42, 1) 70%,
+    rgba(20, 10, 32, 1) 100%
+  );
+  position: fixed;
+  inset: 0;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+}
+
+#site-preloader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 540px at 50% 50%,
+    rgba(88, 204, 2, 0.16) 0%,
+    rgba(14, 165, 233, 0.10) 35%,
+    rgba(168, 85, 247, 0.08) 70%,
+    transparent 100%
+  );
 }
 
 #site-preloader.preloader-hidden {
