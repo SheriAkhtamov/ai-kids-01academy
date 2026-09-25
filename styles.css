@@ -21,6 +21,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -29,6 +31,28 @@ body {
   background-color: #ffffff;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Prevent iOS Safari from auto-zooming into form inputs */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+select,
+textarea {
+  font-size: 16px;
+}
+@media (min-width: 640px) {
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  select,
+  textarea {
+    font-size: 0.875rem;
+  }
 }
 
 h1, h2, h3, h4, 
@@ -211,6 +235,14 @@ body.scrolling-up .underline-animated::after {
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
 }
 
+@media (max-width: 639px) {
+  .word-bounce {
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
 .word-bounce:hover {
   transform: translateY(-4px) scale(1.06);
   color: var(--duo-green);
@@ -293,29 +325,53 @@ body.scrolling-up .underline-animated::after {
 .faq-item {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.faq-item:hover,
 .faq-item.is-open {
   transform: translateY(-2px);
   border-color: #86efac;
   box-shadow: 0 12px 28px -6px rgba(88, 204, 2, 0.14), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
-.faq-item:hover h4,
 .faq-item.is-open h4 {
   color: #15803d;
 }
 
-.faq-item:hover .faq-chevron,
 .faq-item.is-open .faq-chevron {
   transform: rotate(180deg);
 }
 
-.faq-item:hover .faq-icon-pill,
 .faq-item.is-open .faq-icon-pill {
   background-color: #dcfce7;
   color: #15803d;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .faq-item:hover {
+    transform: translateY(-2px);
+    border-color: #86efac;
+    box-shadow: 0 12px 28px -6px rgba(88, 204, 2, 0.14), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  }
+
+  .faq-item:hover h4 {
+    color: #15803d;
+  }
+
+  .faq-item:hover .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-item:hover .faq-icon-pill {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  .faq-item:hover .faq-answer-wrapper {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .faq-answer-wrapper {
@@ -332,7 +388,6 @@ body.scrolling-up .underline-animated::after {
   overflow: hidden;
 }
 
-.faq-item:hover .faq-answer-wrapper,
 .faq-item.is-open .faq-answer-wrapper {
   grid-template-rows: 1fr;
   opacity: 1;
@@ -570,19 +625,20 @@ body.scrolling-up .underline-animated::after {
 .collage-viewport {
   position: relative;
   overflow: hidden;
-  height: 500px;
+  max-width: 100%;
+  height: 420px;
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0px,
-    black 48px,
-    black calc(100% - 48px),
+    black 36px,
+    black calc(100% - 36px),
     transparent 100%
   );
   mask-image: linear-gradient(
     to bottom,
     transparent 0px,
-    black 48px,
-    black calc(100% - 48px),
+    black 36px,
+    black calc(100% - 36px),
     transparent 100%
   );
 }
@@ -782,6 +838,105 @@ body.scrolling-up .underline-animated::after {
   background-color: #d1fae5;
   color: #065f46;
   border: 1px solid #6ee7b7;
+}
+
+/* ==========================================
+   MOBILE MENU TOGGLE & DRAWER
+   ========================================== */
+.mobile-menu-btn {
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.mobile-menu-btn:active {
+  transform: scale(0.94);
+}
+
+#main-header.header-theme-white .mobile-menu-btn {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.hamburger-line-1,
+.hamburger-line-2,
+.hamburger-line-3 {
+  transform-origin: center;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.mobile-menu-btn.is-active .hamburger-line-1 {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.mobile-menu-btn.is-active .hamburger-line-2 {
+  opacity: 0;
+}
+
+.mobile-menu-btn.is-active .hamburger-line-3 {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+#mobile-menu-drawer {
+  border-radius: 1.25rem;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.22s ease;
+  will-change: transform, opacity;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5);
+}
+
+#mobile-menu-drawer.drawer-open {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+#mobile-menu-drawer.drawer-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(2, 6, 23, 0.96) 0%,
+    rgba(5, 20, 24, 0.94) 40%,
+    rgba(15, 23, 42, 0.96) 100%
+  );
+  border: 1px solid rgba(88, 204, 2, 0.25);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6);
+}
+
+#mobile-menu-drawer.drawer-dark .mobile-nav-link {
+  color: #cbd5e1;
+}
+
+#mobile-menu-drawer.drawer-dark .mobile-nav-link:active,
+#mobile-menu-drawer.drawer-dark .mobile-nav-link:hover {
+  background: rgba(88, 204, 2, 0.16);
+  color: var(--duo-green);
+}
+
+#mobile-menu-drawer.drawer-white {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(240, 253, 250, 0.95) 40%,
+    rgba(255, 255, 255, 0.97) 100%
+  );
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.15);
+}
+
+#mobile-menu-drawer.drawer-white .mobile-nav-link {
+  color: #334155;
+}
+
+#mobile-menu-drawer.drawer-white .mobile-nav-link:active,
+#mobile-menu-drawer.drawer-white .mobile-nav-link:hover {
+  background: rgba(88, 204, 2, 0.12);
+  color: #15803d;
 }
 
 /* ==========================================

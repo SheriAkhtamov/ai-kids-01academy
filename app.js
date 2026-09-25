@@ -204,6 +204,12 @@ class AlligatorTracker {
       }
     }, { passive: true });
 
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        this.handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
     document.addEventListener('mouseleave', () => {
       this.targetIsCenter = true;
     });
@@ -396,10 +402,11 @@ function initScrollAnimations() {
     const windowH = window.innerHeight;
 
     // Disappear earlier on reverse scroll (upward scroll):
-    // Standard entrance triggers ~80px from bottom.
-    // Reverse exit triggers 270-300px before bottom edge, so elements
-    // start their reverse cascade (4 -> 3 -> 2 -> 1) clearly in the user's field of view!
-    const exitOffset = Math.round(Math.min(320, Math.max(220, windowH * 0.30)));
+    // On mobile, use a gentler threshold so elements stay readable during touch flicks.
+    const isMobile = window.innerWidth < 768;
+    const exitOffset = isMobile
+      ? Math.round(Math.min(150, Math.max(80, windowH * 0.15)))
+      : Math.round(Math.min(320, Math.max(220, windowH * 0.30)));
     const bottomExitThreshold = windowH - exitOffset;
     const currentScroll = window.scrollY || document.documentElement.scrollTop;
     const isAtBottom = (windowH + currentScroll) >= (document.documentElement.scrollHeight - 60);
@@ -508,15 +515,24 @@ function initHeaderThemeController() {
     // Rule:
     // When touching white/light screen -> header has dark color of children's works screen (slate-950)
     // When touching dark screen -> header changes back to white
+    const drawer = document.getElementById('mobile-menu-drawer');
     if (currentTheme === 'light') {
       if (!header.classList.contains('header-theme-dark')) {
         header.classList.remove('header-theme-white');
         header.classList.add('header-theme-dark');
       }
+      if (drawer) {
+        drawer.classList.remove('drawer-white');
+        drawer.classList.add('drawer-dark');
+      }
     } else {
       if (!header.classList.contains('header-theme-white')) {
         header.classList.remove('header-theme-dark');
         header.classList.add('header-theme-white');
+      }
+      if (drawer) {
+        drawer.classList.remove('drawer-dark');
+        drawer.classList.add('drawer-white');
       }
     }
   };
@@ -1024,6 +1040,73 @@ function initFaqAccordion() {
 }
 
 // ==========================================
+// Mobile Navigation Drawer Toggle & Handler
+// ==========================================
+function initMobileMenu() {
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const drawer = document.getElementById('mobile-menu-drawer');
+  if (!toggleBtn || !drawer) return;
+
+  function openDrawer() {
+    drawer.classList.remove('hidden');
+    // Force reflow
+    void drawer.offsetWidth;
+    drawer.classList.add('drawer-open');
+    toggleBtn.classList.add('is-active');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('drawer-open');
+    toggleBtn.classList.remove('is-active');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(() => {
+      if (!drawer.classList.contains('drawer-open')) {
+        drawer.classList.add('hidden');
+      }
+    }, 280);
+  }
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = drawer.classList.contains('drawer-open');
+    if (isOpen) {
+      closeDrawer();
+    } else {
+      openDrawer();
+    }
+  });
+
+  // Close on click on any link inside
+  drawer.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      closeDrawer();
+    });
+  });
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (drawer.classList.contains('drawer-open') && !drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+      closeDrawer();
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('drawer-open')) {
+      closeDrawer();
+    }
+  });
+
+  // Close on desktop resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && drawer.classList.contains('drawer-open')) {
+      closeDrawer();
+    }
+  }, { passive: true });
+}
+
+// ==========================================
 // App Initializer
 // ==========================================
 function initApp() {
@@ -1034,6 +1117,7 @@ function initApp() {
   initScrollAnimations();
   initActiveNavSpy();
   initHeaderThemeController();
+  initMobileMenu();
   initCollageParallax();
   initCollageVideos();
   initFaqAccordion();

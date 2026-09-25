@@ -54,16 +54,16 @@
   <!-- ==========================================
        1. NAVIGATION BAR (Dynamic Inverted Liquid Crystal Floating Header)
        ========================================== -->
-  <header class="sticky top-2.5 sm:top-3.5 z-40 px-3 sm:px-6 pointer-events-none transition-all duration-300">
-    <div id="main-header" class="max-w-6xl mx-auto pointer-events-auto rounded-2xl sm:rounded-3xl backdrop-blur-xl px-5 sm:px-7 py-3 sm:py-3.5 flex items-center justify-between relative overflow-hidden header-theme-dark">
+  <header class="sticky top-2 sm:top-3.5 z-40 px-2.5 sm:px-6 pointer-events-none transition-all duration-300">
+    <div id="main-header" class="max-w-6xl mx-auto pointer-events-auto rounded-2xl sm:rounded-3xl backdrop-blur-xl px-3.5 sm:px-7 py-2.5 sm:py-3.5 flex items-center justify-between relative overflow-hidden header-theme-dark">
       
       <!-- Brand Logo -->
-      <a href="#" class="flex items-center gap-2.5 group relative z-10">
-        <img src="assets/logo_green.png" alt="01Academy" class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
-        <span class="header-badge text-[11px] font-black uppercase px-2 py-0.5 rounded-md">Kids</span>
+      <a href="#" class="flex items-center gap-2 group relative z-10 shrink-0">
+        <img src="assets/logo_green.png" alt="01Academy" class="h-7 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+        <span class="header-badge text-[10px] sm:text-[11px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-md">Kids</span>
       </a>
 
-      <!-- Minimal Nav Links with Active Scroll Tracking -->
+      <!-- Minimal Nav Links with Active Scroll Tracking (Desktop) -->
       <nav class="hidden md:flex items-center gap-6 text-sm font-bold relative z-10">
         <a href="#about" class="nav-link">О курсе</a>
         <a href="#works" class="nav-link">Работы детей</a>
@@ -71,13 +71,53 @@
         <a href="#contacts" class="nav-link">Контакты</a>
       </nav>
 
-      <!-- CTA -->
-      <div class="flex items-center gap-3 relative z-10">
-        <a href="#apply" class="btn-duo-primary text-xs sm:text-sm px-5 py-2.5">
-          Пробный урок
+      <!-- Right Controls: CTA + Mobile Hamburger Toggle -->
+      <div class="flex items-center gap-2 sm:gap-3 relative z-10">
+        <a href="#apply" class="btn-duo-primary text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 whitespace-nowrap">
+          <span>Пробный урок</span>
         </a>
+
+        <!-- Mobile Menu Toggle Button (visible only on mobile) -->
+        <button id="mobile-menu-toggle" type="button" aria-label="Открыть меню" class="md:hidden flex items-center justify-center w-9 h-9 rounded-xl mobile-menu-btn">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path class="hamburger-line-1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16"/>
+            <path class="hamburger-line-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 12h16"/>
+            <path class="hamburger-line-3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 18h16"/>
+          </svg>
+        </button>
       </div>
 
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu-drawer" class="md:hidden pointer-events-none max-w-6xl mx-auto mt-2 rounded-2xl backdrop-blur-2xl p-4 transition-all duration-300 transform opacity-0 -translate-y-3 hidden drawer-dark">
+      <nav class="flex flex-col gap-1 text-sm font-extrabold">
+        <a href="#about" class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-xl transition-colors">
+          <span>О курсе</span>
+          <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#works" class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-xl transition-colors">
+          <span>Работы детей</span>
+          <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#faq" class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-xl transition-colors">
+          <span>Частые вопросы</span>
+          <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contacts" class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-xl transition-colors">
+          <span>Контакты и адрес</span>
+          <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </nav>
+      <div class="pt-3 mt-2 border-t border-white/10 flex items-center justify-between gap-3 text-xs font-bold">
+        <a href="https://t.me/AIacademy_uz" target="_blank" class="text-emerald-400 flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-emerald-950/50 border border-emerald-500/30">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Telegram</span>
+        </a>
+        <a href="#apply" class="btn-duo-primary text-xs px-3.5 py-2 mobile-menu-cta">
+          Записаться
+        </a>
+      </div>
     </div>
   </header>
 
@@ -86,30 +126,30 @@
     <!-- ==========================================
          2. HERO SECTION (EXACT MATCH TO VIDEO BACKGROUND #fcfcfc)
          ========================================== -->
-    <section data-theme="light" class="relative pt-12 pb-16 sm:pt-16 sm:pb-24 overflow-hidden" style="background-color: #fcfcfc;">
-      <div class="max-w-6xl mx-auto px-6">
-        <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+    <section data-theme="light" class="relative pt-6 pb-12 sm:pt-16 sm:pb-24 overflow-hidden" style="background-color: #fcfcfc;">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           <!-- Hero Left Column: Clean Minimalist Copy with Playful Animations -->
           <div class="lg:col-span-7 text-center lg:text-left">
             
             <!-- Main Heading with Interactive Word Bounce and AI Shimmer -->
-            <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-black text-slate-900 tracking-[-0.03em] leading-[1.12] mb-5 select-none">
+            <h1 class="text-[26px] xs:text-[32px] sm:text-4xl lg:text-[52px] font-black text-slate-900 tracking-[-0.03em] leading-[1.18] sm:leading-[1.12] mb-4 sm:mb-5 select-none break-words">
               <span class="word-bounce">Мы</span> <span class="word-bounce">не</span> <span class="word-bounce">учим</span> <span class="word-bounce">программировать.</span> <br />
               <span class="word-bounce">Мы</span> <span class="word-bounce">учим</span> <span class="text-shimmer underline-animated">использовать AI с умом.</span>
             </h1>
 
             <!-- Subtitle with Scroll Highlights -->
-            <p class="text-base sm:text-lg text-slate-600 font-medium leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+            <p class="text-sm sm:text-lg text-slate-600 font-medium leading-relaxed mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
               Практический курс <strong class="text-slate-900 font-bold">AI Kids</strong> <span class="scroll-highlight">для детей и подростков 7–18 лет</span>: проектное мышление, генерация контента и решение реальных задач <span class="scroll-highlight">с первого урока</span>.
             </p>
 
             <!-- Action Buttons with Scroll Animation -->
-            <div class="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
-              <a href="#apply" class="btn-duo-primary scroll-button px-8 py-3.5 text-base inline-flex items-center justify-center">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-3.5 justify-center lg:justify-start max-w-xs sm:max-w-none mx-auto lg:mx-0">
+              <a href="#apply" class="btn-duo-primary scroll-button px-6 sm:px-8 py-3.5 text-sm sm:text-base inline-flex items-center justify-center w-full sm:w-auto">
                 Записаться на пробный урок
               </a>
-              <a href="#about" class="btn-duo-secondary scroll-button px-6 py-3.5 text-base inline-flex items-center justify-center gap-1.5">
+              <a href="#about" class="btn-duo-secondary scroll-button px-6 py-3.5 text-sm sm:text-base inline-flex items-center justify-center gap-1.5 w-full sm:w-auto">
                 <span>О курсе</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
               </a>
@@ -119,7 +159,7 @@
 
           <!-- Hero Right Column: Interactive Alligator -->
           <div class="lg:col-span-5 flex items-center justify-center">
-            <div class="w-full max-w-[420px] aspect-square flex items-center justify-center">
+            <div class="w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[380px] lg:max-w-[420px] aspect-square flex items-center justify-center mx-auto">
               <canvas id="alligator-canvas" width="600" height="600" class="w-full h-full object-contain"></canvas>
             </div>
           </div>
@@ -131,61 +171,61 @@
     <!-- ==========================================
          3. ABOUT THE COURSE (AI KIDS)
          ========================================== -->
-    <section id="about" data-theme="light" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-gradient-to-b from-[#fcfcfc] via-[#f3f9f5] to-[#ecf5ef] relative overflow-hidden">
-      <div class="max-w-5xl mx-auto px-6 relative z-20">
+    <section id="about" data-theme="light" class="pt-14 sm:pt-28 pb-18 sm:pb-36 bg-gradient-to-b from-[#fcfcfc] via-[#f3f9f5] to-[#ecf5ef] relative overflow-hidden">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-20">
         
         <!-- Header with Masked Scroll Text Reveal -->
-        <div class="text-center max-w-xl mx-auto mb-14 reveal-fade header-reveal">
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-[-0.02em] mb-3 scroll-reveal-text">
+        <div class="text-center max-w-xl mx-auto mb-10 sm:mb-14 reveal-fade header-reveal">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-[-0.02em] mb-2.5 sm:mb-3 scroll-reveal-text">
             <span class="scroll-inner">О курсе <span class="text-duo-green">AI Kids</span></span>
           </h2>
-          <p class="text-slate-500 font-medium text-base">
+          <p class="text-slate-500 font-medium text-sm sm:text-base px-1">
             Практическая программа <span class="scroll-highlight">для детей и подростков 7–18 лет</span> в Ташкенте. Учим использовать нейросети осознанно: для творчества, учёбы и собственных проектов.
           </p>
         </div>
 
-        <div class="grid lg:grid-cols-12 gap-8 items-center mb-8">
+        <div class="grid lg:grid-cols-12 gap-6 sm:gap-8 items-center mb-8">
           
           <!-- Left Column: Interactive Waving Character (Scroll Linked) -->
           <div class="lg:col-span-4 flex items-center justify-center">
-            <div class="w-full max-w-[380px] aspect-[600/460] flex items-center justify-center">
+            <div class="w-full max-w-[240px] xs:max-w-[280px] sm:max-w-[340px] lg:max-w-[380px] aspect-[600/460] flex items-center justify-center mx-auto">
               <canvas id="wave-canvas" width="600" height="460" class="w-full h-full object-contain"></canvas>
             </div>
           </div>
 
           <!-- Right Column: Course Presentation Card with Interactive Elements -->
-          <div class="lg:col-span-8">
-            <div class="figma-course-card scroll-block-reveal p-7 sm:p-9">
-              <div class="grid md:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-8 min-w-0">
+            <div class="figma-course-card scroll-block-reveal p-5 xs:p-6 sm:p-9 min-w-0">
+              <div class="grid md:grid-cols-12 gap-5 sm:gap-6 items-center">
                 
                 <!-- Left: What the student learns with Scroll Feature Stagger -->
-                <div class="md:col-span-7 space-y-5">
-                  <div class="inline-flex items-center bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-xs">
+                <div class="md:col-span-7 space-y-4 sm:space-y-5 min-w-0">
+                  <div class="inline-flex items-center bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] sm:text-xs font-black uppercase tracking-wider px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full shadow-xs">
                     <span>Чему учится ребёнок</span>
                   </div>
 
-                  <ul class="space-y-3.5 text-sm text-slate-700 font-semibold">
-                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  <ul class="space-y-3 sm:space-y-3.5 text-xs sm:text-sm text-slate-700 font-semibold">
+                    <li class="check-item scroll-feature-item flex items-start gap-2.5 sm:gap-3 cursor-default">
+                      <span class="check-icon w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        <svg class="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       </span>
                       <span><strong>Промптинг:</strong> формулировать задачи для нейросетей простыми и точными словами.</span>
                     </li>
-                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <li class="check-item scroll-feature-item flex items-start gap-2.5 sm:gap-3 cursor-default">
+                      <span class="check-icon w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        <svg class="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       </span>
                       <span><strong>Контент и визуалы:</strong> генерировать иллюстрации, персонажей, комиксы, сценарии и видео.</span>
                     </li>
-                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <li class="check-item scroll-feature-item flex items-start gap-2.5 sm:gap-3 cursor-default">
+                      <span class="check-icon w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        <svg class="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       </span>
                       <span><strong>Школьные проекты:</strong> собирать материалы и готовить понятные презентации и доклады.</span>
                     </li>
-                    <li class="check-item scroll-feature-item flex items-start gap-3 cursor-default">
-                      <span class="check-icon w-6 h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <li class="check-item scroll-feature-item flex items-start gap-2.5 sm:gap-3 cursor-default">
+                      <span class="check-icon w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-duo-green text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        <svg class="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       </span>
                       <span><strong>Критическое мышление:</strong> проверять факты, находить ошибки AI и <span class="scroll-highlight">не списывать слепо</span>.</span>
                     </li>
@@ -193,10 +233,10 @@
                 </div>
 
                 <!-- Right: Course format & CTA with Pop Stats on Scroll -->
-                <div class="md:col-span-5 scroll-block-reveal bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-5 space-y-3.5">
-                  <div class="text-xs font-black uppercase text-slate-400 tracking-wider">Параметры курса</div>
+                <div class="md:col-span-5 scroll-block-reveal bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-3 sm:space-y-3.5 min-w-0 mt-4 md:mt-0">
+                  <div class="text-[11px] sm:text-xs font-black uppercase text-slate-400 tracking-wider">Параметры курса</div>
                   
-                  <div class="space-y-2.5 text-xs text-slate-800 font-bold">
+                  <div class="space-y-2 text-xs text-slate-800 font-bold">
                     <div class="stat-row flex items-center justify-between border-b border-slate-200/70 pb-2">
                       <span class="text-slate-500 font-medium">Возраст:</span>
                       <span class="scroll-stat-badge">7–18 лет</span>
@@ -219,7 +259,7 @@
                     </div>
                   </div>
 
-                  <a href="#apply" class="btn-duo-primary scroll-button w-full py-3 text-sm mt-3 inline-flex items-center justify-center">
+                  <a href="#apply" class="btn-duo-primary scroll-button w-full py-3 text-xs sm:text-sm mt-3 inline-flex items-center justify-center">
                     Записаться на курс
                   </a>
                 </div>
@@ -239,37 +279,37 @@
     <!-- ==========================================
          4. CHILDREN'S PROJECTS (PARALLEL OPPOSITE COLLAGE)
          ========================================== -->
-    <section id="works" data-theme="dark" class="py-16 sm:py-24 bg-slate-950 overflow-hidden relative">
+    <section id="works" data-theme="dark" class="py-14 sm:py-24 bg-slate-950 overflow-hidden relative">
       <!-- Subtle Emerald Ambient Glow (Centered around title, smoothly feathered so top edge is 100% pure slate-950) -->
       <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_35%,rgba(88,204,2,0.12),transparent_70%)]"></div>
 
       <!-- Soft Top Edge Feather (compact) -->
       <div class="pointer-events-none absolute top-0 left-0 right-0 h-10 sm:h-14 bg-gradient-to-b from-slate-950 to-transparent z-10"></div>
 
-      <div class="max-w-4xl mx-auto px-6 mb-8 text-center relative z-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 mb-6 sm:mb-8 text-center relative z-10">
         <!-- Header with Masked Scroll Text Reveal -->
         <div class="text-center max-w-2xl mx-auto reveal-fade header-reveal">
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-[-0.02em] mb-3 scroll-reveal-text">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-[-0.02em] mb-2 sm:mb-3 scroll-reveal-text">
             <span class="scroll-inner">Что создают дети на курсе <span class="text-duo-green">AI Kids</span></span>
           </h2>
-          <p class="text-slate-400 font-medium text-base">
+          <p class="text-slate-400 font-medium text-xs sm:text-base">
             Анимации, 3D-сцены, видеоистории и живые персонажи — реальные работы наших учеников от 7 до 18 лет, созданные с помощью нейросетей.
           </p>
         </div>
       </div>
 
       <!-- Tilted Opposite Parallel Collage Viewport (Standard Screen Height) -->
-      <div class="collage-viewport relative max-w-6xl mx-auto px-6 sm:px-10 lg:px-14">
+      <div class="collage-viewport relative max-w-6xl mx-auto px-2 xs:px-4 sm:px-10 lg:px-14">
 
         <!-- Soft Top & Bottom Edge Feathers -->
         <div class="pointer-events-none absolute top-0 left-0 right-0 h-14 sm:h-20 bg-gradient-to-b from-slate-950 via-slate-950/70 to-transparent z-20"></div>
         <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-14 sm:h-20 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent z-20"></div>
 
         <!-- Tilted Stage with 3 Parallel Opposite Columns -->
-        <div class="collage-stage grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 py-2">
+        <div class="collage-stage grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 py-2">
           
           <!-- Column 1 (Moves UP) -->
-          <div class="collage-col collage-col-1 space-y-4 sm:space-y-6">
+          <div class="collage-col collage-col-1 space-y-3 sm:space-y-6">
             <!-- Card 1 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
               <video src="assets/works/work-01.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
@@ -302,7 +342,7 @@
           </div>
 
           <!-- Column 2 (Moves DOWN in OPPOSITE direction) -->
-          <div class="collage-col collage-col-2 space-y-4 sm:space-y-6">
+          <div class="collage-col collage-col-2 space-y-3 sm:space-y-6">
             <!-- Card 5 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
               <video src="assets/works/work-05.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
@@ -335,7 +375,7 @@
           </div>
 
           <!-- Column 3 (Moves UP in sync with Col 1) -->
-          <div class="collage-col collage-col-3 space-y-4 sm:space-y-6 hidden md:block">
+          <div class="collage-col collage-col-3 space-y-3 sm:space-y-6 hidden md:block">
             <!-- Card 9 -->
             <div class="collage-card group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-900 shadow-md hover:shadow-2xl transition-all duration-300 aspect-[3/4]">
               <video src="assets/works/work-09.mp4" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover"></video>
@@ -378,23 +418,23 @@
     <!-- ==========================================
          5. FAQ SECTION
          ========================================== -->
-    <section id="faq" data-theme="light" class="pt-20 sm:pt-28 pb-28 sm:pb-36 bg-[#f8fafc] relative overflow-hidden">
-      <div class="max-w-3xl mx-auto px-6 relative z-20">
+    <section id="faq" data-theme="light" class="pt-14 sm:pt-28 pb-18 sm:pb-36 bg-[#f8fafc] relative overflow-hidden">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
         
-        <div class="text-center mb-12 reveal-fade header-reveal">
-          <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-[-0.02em] mb-2 scroll-reveal-text">
+        <div class="text-center mb-8 sm:mb-12 reveal-fade header-reveal">
+          <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-[-0.02em] mb-2 scroll-reveal-text">
             <span class="scroll-inner">Частые вопросы</span>
           </h2>
-          <p class="text-slate-500 font-medium text-sm">
+          <p class="text-slate-500 font-medium text-xs sm:text-sm">
             Главное, что нужно знать родителям <span class="scroll-highlight">перед стартом</span>.
           </p>
         </div>
 
-        <div class="space-y-3.5">
+        <div class="space-y-3 sm:space-y-3.5">
           
-          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
-            <div class="faq-header flex items-center justify-between gap-4">
-              <h4 class="font-black text-slate-900 text-base transition-colors group-hover:text-emerald-700">
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
+            <div class="faq-header flex items-center justify-between gap-3 sm:gap-4">
+              <h4 class="font-black text-slate-900 text-sm sm:text-base transition-colors group-hover:text-emerald-700">
                 Как проходит пробный урок?
               </h4>
               <span class="faq-icon-pill w-7 h-7 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 shrink-0 transition-all duration-300">
@@ -410,9 +450,9 @@
             </div>
           </div>
 
-          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
-            <div class="faq-header flex items-center justify-between gap-4">
-              <h4 class="font-black text-slate-900 text-base transition-colors group-hover:text-emerald-700">
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
+            <div class="faq-header flex items-center justify-between gap-3 sm:gap-4">
+              <h4 class="font-black text-slate-900 text-sm sm:text-base transition-colors group-hover:text-emerald-700">
                 Что нужно брать с собой на занятия?
               </h4>
               <span class="faq-icon-pill w-7 h-7 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 shrink-0 transition-all duration-300">
@@ -428,9 +468,9 @@
             </div>
           </div>
 
-          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
-            <div class="faq-header flex items-center justify-between gap-4">
-              <h4 class="font-black text-slate-900 text-base transition-colors group-hover:text-emerald-700">
+          <div class="faq-item scroll-faq-card border-2 border-slate-200/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-white shadow-xs transition-all duration-300 cursor-pointer group">
+            <div class="faq-header flex items-center justify-between gap-3 sm:gap-4">
+              <h4 class="font-black text-slate-900 text-sm sm:text-base transition-colors group-hover:text-emerald-700">
                 Безопасно ли это и не заменит ли AI собственное мышление?
               </h4>
               <span class="faq-icon-pill w-7 h-7 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 shrink-0 transition-all duration-300">
@@ -449,12 +489,12 @@
         </div>
 
         <!-- FAQ Direct Help CTA Block with Button -->
-        <div class="scroll-block-reveal mt-8 p-6 rounded-2xl bg-white border-2 border-emerald-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div class="scroll-block-reveal mt-6 sm:mt-8 p-4 xs:p-6 rounded-2xl bg-white border-2 border-emerald-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div>
-            <h4 class="font-black text-slate-900 text-base">Остались вопросы о курсе?</h4>
+            <h4 class="font-black text-slate-900 text-sm sm:text-base">Остались вопросы о курсе?</h4>
             <p class="text-xs text-slate-600 font-medium mt-0.5">Напишите нам в Telegram — ответим в течение 10 минут</p>
           </div>
-          <a href="https://t.me/AIacademy_uz" target="_blank" class="btn-duo-primary scroll-button text-xs sm:text-sm px-5 py-3 shrink-0 inline-flex items-center gap-2">
+          <a href="https://t.me/AIacademy_uz" target="_blank" class="btn-duo-primary scroll-button text-xs sm:text-sm px-5 py-3 shrink-0 inline-flex items-center justify-center gap-2 w-full sm:w-auto">
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
             <span>Написать в Telegram</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -470,7 +510,7 @@
     <!-- ==========================================
          6. APPLICATION FORM (LAST SCREEN WITH 3D LIQUID CRYSTAL)
          ========================================== -->
-    <section id="apply" data-theme="dark" class="py-20 sm:py-28 bg-slate-950 relative overflow-hidden">
+    <section id="apply" data-theme="dark" class="py-14 sm:py-28 bg-slate-950 relative overflow-hidden">
       <!-- Interactive 3D Liquid Crystal Wave Canvas -->
       <canvas id="liquid-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
@@ -478,10 +518,10 @@
       <div class="pointer-events-none absolute top-0 left-0 right-0 h-10 sm:h-14 bg-gradient-to-b from-slate-950 to-transparent z-10"></div>
       <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-10 sm:h-14 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
 
-      <div class="max-w-md mx-auto px-6 text-center relative z-10">
+      <div class="max-w-md mx-auto px-4 sm:px-6 text-center relative z-10">
         
-        <div class="reveal-fade header-reveal mb-8">
-          <h2 class="text-3xl font-black text-white tracking-tight mb-2 scroll-reveal-text">
+        <div class="reveal-fade header-reveal mb-6 sm:mb-8">
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 scroll-reveal-text">
             <span class="scroll-inner">Записаться на урок</span>
           </h2>
           <p class="text-slate-400 font-medium text-xs sm:text-sm">
@@ -489,20 +529,20 @@
           </p>
         </div>
 
-        <form id="lead-form" class="mockup-frame scroll-block-reveal p-7 sm:p-9 text-left space-y-4 bg-white/95 backdrop-blur-md border-2 border-emerald-500/30 rounded-3xl shadow-2xl">
+        <form id="lead-form" class="mockup-frame scroll-block-reveal p-5 xs:p-7 sm:p-9 text-left space-y-3.5 sm:space-y-4 bg-white/95 backdrop-blur-md border-2 border-emerald-500/30 rounded-2xl sm:rounded-3xl shadow-2xl">
           <div class="scroll-form-field">
             <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Имя</label>
-            <input type="text" id="name" required placeholder="Ваше имя или имя ребёнка" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
+            <input type="text" id="name" required placeholder="Ваше имя или имя ребёнка" class="w-full px-3.5 sm:px-4 py-3 rounded-xl border-2 border-slate-200 text-base sm:text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
           </div>
 
           <div class="scroll-form-field">
             <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Номер телефона</label>
-            <input type="tel" id="phone" required placeholder="+998 90 123 45 67" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
+            <input type="tel" id="phone" required placeholder="+998 90 123 45 67" class="w-full px-3.5 sm:px-4 py-3 rounded-xl border-2 border-slate-200 text-base sm:text-sm font-semibold focus:border-duo-green focus:outline-none transition-colors" />
           </div>
 
           <div class="scroll-form-field">
             <label class="block text-xs font-black uppercase text-slate-600 tracking-wider mb-1.5">Возраст ребёнка</label>
-            <select id="course" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-sm font-semibold focus:border-duo-green focus:outline-none bg-white transition-colors">
+            <select id="course" class="w-full px-3.5 sm:px-4 py-3 rounded-xl border-2 border-slate-200 text-base sm:text-sm font-semibold focus:border-duo-green focus:outline-none bg-white transition-colors">
               <option value="7–10 лет">7–10 лет</option>
               <option value="11–14 лет">11–14 лет</option>
               <option value="15–18 лет">15–18 лет</option>
@@ -510,7 +550,7 @@
           </div>
 
           <div class="scroll-form-field">
-            <button type="submit" class="btn-duo-primary scroll-button w-full py-3.5 text-sm font-extrabold mt-2 flex items-center justify-center">
+            <button type="submit" class="btn-duo-primary scroll-button w-full py-3.5 sm:py-4 text-sm sm:text-base font-extrabold mt-2 flex items-center justify-center">
               Забронировать место
             </button>
           </div>
@@ -531,18 +571,20 @@
   <!-- ==========================================
        7. MINIMAL FOOTER
        ========================================== -->
-  <footer id="contacts" data-theme="dark" class="py-12 bg-slate-950 border-t border-slate-900 text-slate-400">
-    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-slate-400 font-bold">
-      <div class="flex items-center gap-2.5">
-        <img src="assets/logo_green.png" alt="01Academy" class="h-6 w-auto object-contain" />
-        <span class="text-[10px] font-black uppercase text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.5 rounded-md">Kids</span>
-        <span class="text-slate-600">·</span>
+  <footer id="contacts" data-theme="dark" class="py-8 sm:py-12 bg-slate-950 border-t border-slate-900 text-slate-400">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-bold text-center md:text-left">
+      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-2.5">
+        <div class="flex items-center gap-2">
+          <img src="assets/logo_green.png" alt="01Academy" class="h-6 w-auto object-contain" />
+          <span class="text-[10px] font-black uppercase text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.5 rounded-md">Kids</span>
+        </div>
+        <span class="hidden sm:inline text-slate-600">·</span>
         <span class="text-slate-300">г. Ташкент, ул. Тараса Шевченко, 20</span>
       </div>
 
-      <div class="flex items-center gap-6">
-        <a href="https://t.me/AIacademy_uz" target="_blank" class="text-emerald-400 hover:text-emerald-300 transition-colors">Telegram: @AIacademy_uz</a>
-        <a href="https://01academy.uz" target="_blank" class="text-slate-300 hover:text-white transition-colors">01academy.uz</a>
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+        <a href="https://t.me/AIacademy_uz" target="_blank" class="text-emerald-400 hover:text-emerald-300 transition-colors py-1">Telegram: @AIacademy_uz</a>
+        <a href="https://01academy.uz" target="_blank" class="text-slate-300 hover:text-white transition-colors py-1">01academy.uz</a>
       </div>
     </div>
   </footer>
